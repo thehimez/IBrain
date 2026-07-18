@@ -5505,6 +5505,28 @@ export const MIGRATIONS: Migration[] = [
         WHERE dimension IS NOT NULL;
     `,
   },
+  {
+    version: 123,
+    name: 'users_table',
+    idempotent: true,
+    sql: `
+      CREATE TABLE IF NOT EXISTS users (
+        id             TEXT PRIMARY KEY,
+        replit_user_id TEXT UNIQUE NOT NULL,
+        name           TEXT NOT NULL DEFAULT '',
+        avatar_url     TEXT,
+        created_at     TIMESTAMPTZ DEFAULT NOW(),
+        updated_at     TIMESTAMPTZ DEFAULT NOW()
+      );
+    `,
+    verify: async (engine: BrainEngine) => {
+      const rows = await engine.executeRaw<{ table_name: string }>(
+        `SELECT table_name FROM information_schema.tables
+         WHERE table_name = 'users' AND table_schema = 'public'`,
+      );
+      return rows.length > 0;
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.length > 0

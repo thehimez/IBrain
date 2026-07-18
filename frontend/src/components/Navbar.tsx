@@ -1,5 +1,6 @@
 import { Brain, Menu, Wifi, WifiOff } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 interface Props {
   onToggleSidebar: () => void;
@@ -7,7 +8,9 @@ interface Props {
 
 export default function Navbar({ onToggleSidebar }: Props) {
   const { getCurrentBrain, brainStatus } = useApp();
+  const { user } = useAuth();
   const connected = brainStatus?.connected ?? false;
+  const initials = user?.name ? user.name.slice(0, 1).toUpperCase() : 'U';
 
   return (
     <header className="h-14 flex items-center justify-between px-4 border-b border-navy-600 bg-navy-800/80 backdrop-blur-sm z-30 flex-shrink-0">
@@ -49,9 +52,22 @@ export default function Navbar({ onToggleSidebar }: Props) {
         </div>
 
         {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-xs font-semibold text-accent-light">
-          D
-        </div>
+        {user?.avatarUrl ? (
+          <img
+            src={user.avatarUrl}
+            alt={user.name}
+            className="w-8 h-8 rounded-full border border-accent/30 object-cover"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-xs font-semibold text-accent-light">
+            {initials}
+          </div>
+        )}
+        {user?.name && (
+          <span className="hidden md:block text-xs text-slate-300 font-medium max-w-[120px] truncate">
+            {user.name}
+          </span>
+        )}
       </div>
     </header>
   );

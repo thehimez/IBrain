@@ -1,0 +1,350 @@
+You are the lead software architect for GBrain.
+
+IMPORTANT
+
+This is NOT a refactor.
+
+This is NOT a rewrite.
+
+This is a migration from a single-user application to a multi-user application while preserving all existing functionality.
+
+The existing GBrain system already works.
+
+The following features MUST continue working exactly as they do today:
+
+- Chat
+- Upload
+- Ingestion Worker
+- Knowledge Extraction
+- Knowledge Graph
+- Search
+- Hybrid RAG
+- GPT Responses
+- Citations
+- Conversation History
+- Existing APIs
+
+Do NOT redesign or rewrite the ingestion pipeline.
+
+Do NOT redesign the search engine.
+
+Do NOT redesign the graph engine.
+
+Only introduce user isolation.
+
+========================================================
+OBJECTIVE
+========================================================
+
+Convert GBrain into a multi-user application.
+
+Each user should have completely isolated data.
+
+Example
+
+User A
+
+uploads documents
+
+creates conversations
+
+builds knowledge graph
+
+asks questions
+
+↓
+
+Only User A can access these.
+
+--------------------------------------------------------
+
+User B
+
+uploads different documents
+
+has different graph
+
+different conversations
+
+different embeddings
+
+↓
+
+User B cannot access anything belonging to User A.
+
+========================================================
+AUTHENTICATION
+========================================================
+
+Use Replit Authentication only.
+
+Do NOT build
+
+- Email login
+- Password login
+- JWT authentication
+- OAuth provider integrations
+- Signup forms
+
+Use Replit's official authentication mechanism.
+
+On first login
+
+Automatically create the user.
+
+On subsequent logins
+
+Reuse the same user.
+
+========================================================
+DATABASE
+========================================================
+
+Create a Users table.
+
+Suggested fields
+
+id
+
+replit_user_id
+
+email
+
+name
+
+profile_image
+
+created_at
+
+updated_at
+
+========================================================
+DATA OWNERSHIP
+========================================================
+
+Every user-owned resource must belong to a user.
+
+Audit the database schema.
+
+Find every table that stores user knowledge.
+
+Examples include
+
+Documents
+
+Conversations
+
+Messages
+
+Embeddings
+
+Knowledge Graph entities
+
+Relationships
+
+Sources
+
+or any equivalent tables.
+
+Add an owner_id (or user_id if more appropriate) foreign key to each user-owned table.
+
+Do NOT duplicate databases.
+
+Do NOT create one database per user.
+
+Use one shared database.
+
+All isolation must happen through ownership.
+
+========================================================
+BACKEND
+========================================================
+
+Every backend request must resolve the authenticated Replit user.
+
+Every operation must automatically use that user.
+
+Examples
+
+Upload
+
+Search
+
+Chat
+
+Conversation History
+
+Document Retrieval
+
+Knowledge Graph
+
+Embeddings
+
+Everything must be scoped to the authenticated user.
+
+Never allow cross-user access.
+
+========================================================
+SEARCH
+========================================================
+
+Search should automatically filter
+
+WHERE owner_id = current_user
+
+The frontend should never send arbitrary owner IDs.
+
+The backend must derive the current user from authentication.
+
+========================================================
+UPLOAD
+========================================================
+
+Uploaded documents automatically belong to the authenticated user.
+
+The ingestion worker should continue working exactly as before.
+
+Only associate newly created knowledge with the correct owner.
+
+Do NOT change the ingestion logic.
+
+========================================================
+CHAT
+========================================================
+
+Conversation history belongs to the authenticated user.
+
+Users cannot access each other's conversations.
+
+========================================================
+KNOWLEDGE GRAPH
+========================================================
+
+Graph nodes and relationships belong to the authenticated user.
+
+Graph queries must only return data belonging to that user.
+
+========================================================
+FRONTEND
+========================================================
+
+When the application opens
+
+If the user is not authenticated
+
+Show a professional Sign in with Replit screen.
+
+After successful login
+
+Automatically load the user's own workspace.
+
+Display the user's
+
+- Name
+- Avatar
+
+in the top-right corner.
+
+No additional profile features are required.
+
+========================================================
+SECURITY
+========================================================
+
+Never trust frontend user IDs.
+
+Always derive the authenticated user on the backend.
+
+Prevent any API request from accessing another user's data.
+
+========================================================
+MIGRATION
+========================================================
+
+Provide automatic database migration.
+
+Existing single-user data should remain usable.
+
+If existing records have no owner,
+
+assign them to the first authenticated user during migration.
+
+Do not lose any data.
+
+========================================================
+TESTING
+========================================================
+
+Create two test users.
+
+Verify
+
+User A uploads a document.
+
+User B cannot see it.
+
+User A creates conversations.
+
+User B cannot access them.
+
+Search only returns the authenticated user's documents.
+
+Knowledge graph only contains the authenticated user's entities.
+
+Embeddings are isolated.
+
+Conversation history is isolated.
+
+Chat continues working.
+
+Upload continues working.
+
+Knowledge extraction continues working.
+
+No existing feature should regress.
+
+========================================================
+DELIVERABLE
+========================================================
+
+When implementation is complete
+
+Run the application.
+
+Verify there are no build errors.
+
+Verify authentication works.
+
+Verify first-time user creation works.
+
+Verify repeat login works.
+
+Verify complete user isolation.
+
+Verify chat still functions.
+
+Verify uploads still function.
+
+Verify ingestion still functions.
+
+Verify search still functions.
+
+Verify citations still work.
+
+Verify knowledge graph still works.
+
+Take screenshots showing
+
+1. Login screen
+
+2. User A dashboard
+
+3. User B dashboard
+
+4. User A cannot access User B data
+
+5. User B cannot access User A data
+
+Do not stop until all tests pass successfully.
+
+Before modifying any code, first inspect the existing schema and architecture. Reuse existing patterns wherever possible. Avoid unnecessary refactoring.

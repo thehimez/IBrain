@@ -1,4 +1,4 @@
-# GBrain on Replit
+# GBrain on Replit — Multi-User
 
 **GBrain** is Garry Tan's personal knowledge brain — a Postgres-native RAG/synthesis engine with hybrid search, knowledge graph, citations, and gap analysis.
 
@@ -11,6 +11,24 @@
 | DB | Replit PostgreSQL (pgvector enabled) |
 | AI | OpenAI gpt-4o (chat/think), gpt-4o-mini (expansion), text-embedding-3-small (embeddings) |
 | Jobs | GBrain minion worker (background ingestion queue) |
+| Auth | Replit auth (X-Replit-User-Id headers injected by Replit proxy) |
+
+## Multi-User Architecture
+
+Each user is completely isolated:
+- **`users` table** (migration 123) stores Replit user identity
+- **Per-user `sources` row** (`user:{replit_user_id}`) is the data isolation boundary — all pages, chunks, embeddings, and knowledge graph edges are source-scoped by the existing GBrain architecture
+- **`/api/auth/me`** resolves the Replit user from headers, upserts user + source on first visit
+- **`/api/upload`** requires auth and tags documents with the user's sourceId
+- **`/api/chat`** scopes `think` calls to the user's sourceId (via `DispatchOpts.sourceId`)
+- **Frontend conversations** stored in localStorage keyed by userId (`gbrain_conversations_{userId}`)
+
+### User data flow
+1. User opens app → frontend calls `/api/auth/me`
+2. No auth headers → login screen shown (Replit auth popup)
+3. After auth → Replit proxy injects `X-Replit-User-Id`, `X-Replit-User-Name`, `X-Replit-User-Image` on every request
+4. `/api/auth/me` upserts user row + creates `sources` entry → returns user info
+5. All subsequent API calls are automatically scoped to that user's sourceId
 
 ## Workflows
 

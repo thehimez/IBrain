@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { Conversation, Message, BrainStatus, AppUser } from '../types';
 import { brainService } from '../services/brain';
+import { useAuth } from './AuthContext';
 
 interface AppContextValue {
   // User
@@ -23,11 +24,11 @@ interface AppContextValue {
 
 const AppContext = createContext<AppContextValue | null>(null);
 
-const STORAGE_KEY = 'gbrain_conversations';
+const storageKey = (userId: string) => `gbrain_conversations_${userId}`;
 
-function loadConversations(): Conversation[] {
+function loadConversations(userId: string): Conversation[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey(userId));
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return parsed.map((c: Conversation) => ({
@@ -41,9 +42,9 @@ function loadConversations(): Conversation[] {
   }
 }
 
-function saveConversations(convs: Conversation[]) {
+function saveConversations(userId: string, convs: Conversation[]) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(convs));
+    localStorage.setItem(storageKey(userId), JSON.stringify(convs));
   } catch { /* storage full */ }
 }
 
@@ -52,17 +53,27 @@ function generateId(): string {
 }
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const currentUser: AppUser = { id: 'demo', name: 'Demo User' };
+  const { user: authUser } = useAuth();
+  const currentUser: AppUser = authUser
+    ? { id: authUser.id, name: authUser.name, avatar: authUser.avatarUrl ?? undefined }
+    : { id: 'demo', name: 'Demo User' };
   const currentBrainName = 'Industrial Knowledge Brain';
 
-  const [conversations, setConversations] = useState<Conversation[]>(() => loadConversations());
+  const [conversations, setConversations] = useState<Conversation[]>(() => loadConversations(currentUser.id));
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(
-    () => loadConversations()[0]?.id ?? null
+    () => loadConversations(currentUser.id)[0]?.id ?? null
   );
   const [brainStatus, setBrainStatus] = useState<BrainStatus | null>(null);
 
-  // Persist on change
-  useEffect(() => { saveConversations(conversations); }, [conversations]);
+  // Re-load conversations when user changes (e.g. after login)
+  useEffect(() => {
+    const convs = loadConversations(currentUser.id);
+    setConversations(convs);
+    setCurrentConversationId(convs[0]?.id ?? null);
+  }, [currentUser.id]);
+
+  // Persist on change (scoped to user)
+  useEffect(() => { saveConversations(currentUser.id, conversations); }, [currentUser.id, conversations]);
 
   // Poll brain status
   useEffect(() => {

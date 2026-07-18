@@ -24,6 +24,7 @@ import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprot
 import { mcpAuthRouter } from '@modelcontextprotocol/sdk/server/auth/router.js';
 import { requireBearerAuth } from '@modelcontextprotocol/sdk/server/auth/middleware/bearerAuth.js';
 import type { BrainEngine } from '../core/engine.ts';
+import { upsertUser, readReplitAuthHeaders, userSourceId } from '../core/users.ts';
 import { operations, OperationError } from '../core/operations.ts';
 import type { OperationContext, AuthInfo } from '../core/operations.ts';
 import { GBrainOAuthProvider, validateTokenEndpointAuthMethod } from '../core/oauth-provider.ts';
@@ -609,6 +610,23 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // Public API — no auth required (single-user MVP, access is same-host only)
   // ---------------------------------------------------------------------------
 
+  // GET /api/auth/me — resolve the authenticated Replit user (upsert on first visit)
+  app.get('/api/auth/me', async (req: Request, res: Response) => {
+    const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
+    if (!authInfo) {
+      res.status(401).json({ error: 'not_authenticated' });
+      return;
+    }
+    try {
+      const user = await upsertUser(engine, authInfo);
+      res.json({ id: user.id, name: user.name, avatarUrl: user.avatarUrl, sourceId: user.sourceId });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('GET /api/auth/me error:', msg);
+      res.status(500).json({ error: 'internal_error', detail: msg });
+    }
+  });
+
   // GET /api/brain/status — brain health and page count
   app.get('/api/brain/status', async (_req: Request, res: Response) => {
     try {
@@ -634,7 +652,16 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
         res.status(400).json({ error: 'message is required' });
         return;
       }
-      const result = await dispatchToolCall(engine, 'think', { question: message.trim() });
+      // Resolve user and scope the think call to their source (if authenticated)
+      const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
+      let sourceId: string | undefined;
+      if (authInfo) {
+        try {
+          const user = await upsertUser(engine, authInfo);
+          sourceId = user.sourceId;
+        } catch { /* fall through — chat still works without auth scoping */ }
+      }
+      const result = await dispatchToolCall(engine, 'think', { question: message.trim() }, { sourceId });
       if (result.isError) {
         res.status(500).json({ error: 'brain_error', detail: result.content[0]?.text });
         return;
@@ -2095,14 +2122,22 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   );
 
   // ---------------------------------------------------------------------------
-  // POST /api/upload — browser-based document upload (no OAuth, single-user)
+  // POST /api/upload — browser-based document upload
   // ---------------------------------------------------------------------------
   // Accepts JSON { filename, content, mimeType } from the frontend UI.
   // Supports text/plain, text/markdown, text/html, application/json.
-  // Binary formats (PDF, images) are not yet supported by the ingest pipeline.
+  // Requires Replit auth — documents are tagged with the user's sourceId.
   // ---------------------------------------------------------------------------
   app.post('/api/upload', express.json({ limit: '5mb' }), async (req: Request, res: Response) => {
     try {
+      // Resolve authenticated user — uploads require auth
+      const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
+      if (!authInfo) {
+        res.status(401).json({ error: 'not_authenticated', message: 'Sign in to upload documents.' });
+        return;
+      }
+      const uploader = await upsertUser(engine, authInfo);
+
       const { filename, content, mimeType } = req.body as {
         filename?: string;
         content?: string;
@@ -2129,9 +2164,9 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
 
       const contentHash = computeContentHash(content);
       const event: IngestionEvent = {
-        source_id: 'browser-upload',
+        source_id: uploader.sourceId,
         source_kind: 'webhook',
-        source_uri: `browser-upload:${filename}:${Date.now()}`,
+        source_uri: `${uploader.sourceId}:${filename}:${Date.now()}`,
         received_at: new Date().toISOString(),
         content_type: contentType,
         content,
@@ -2155,7 +2190,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
         'ingest_capture',
         { event },
         {
-          idempotency_key: `upload:browser:${contentHash}`,
+          idempotency_key: `upload:${uploader.id}:${contentHash}`,
           maxWaiting: 50,
         },
       );

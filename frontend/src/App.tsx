@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { AppProvider } from './context/AppContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import ChatWindow from './components/ChatWindow';
 import DocumentsPage from './pages/DocumentsPage';
+import LoginScreen from './components/LoginScreen';
 
 type Page = 'chat' | 'documents';
 
@@ -37,10 +39,35 @@ function Layout() {
   );
 }
 
-export default function App() {
+function AuthGate() {
+  const { user, isLoading, login } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-navy-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          <span className="text-slate-400 text-sm">Loading…</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LoginScreen onLogin={login} />;
+  }
+
   return (
     <AppProvider>
       <Layout />
     </AppProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AuthGate />
+    </AuthProvider>
   );
 }
