@@ -2,19 +2,23 @@ import { Plus, BookOpen, Network, LayoutDashboard, Settings, X, ChevronRight } f
 import { useApp } from '../context/AppContext';
 import ConversationItem from './ConversationItem';
 
+type Page = 'chat' | 'documents';
+
 interface Props {
   open: boolean;
   onClose: () => void;
+  currentPage: Page;
+  onNavigate: (page: Page) => void;
 }
 
 const NAV_ITEMS = [
-  { icon: BookOpen, label: 'Documents', placeholder: true },
-  { icon: Network, label: 'Knowledge Graph', placeholder: true },
-  { icon: LayoutDashboard, label: 'Dashboard', placeholder: true },
-  { icon: Settings, label: 'Settings', placeholder: true },
+  { icon: BookOpen,        label: 'Documents',      page: 'documents' as Page, active: true  },
+  { icon: Network,         label: 'Knowledge Graph', page: null,               active: false },
+  { icon: LayoutDashboard, label: 'Dashboard',       page: null,               active: false },
+  { icon: Settings,        label: 'Settings',        page: null,               active: false },
 ];
 
-export default function Sidebar({ open, onClose }: Props) {
+export default function Sidebar({ open, onClose, currentPage, onNavigate }: Props) {
   const {
     conversations, currentConversation,
     createConversation, selectConversation,
@@ -24,7 +28,12 @@ export default function Sidebar({ open, onClose }: Props) {
 
   const handleNew = () => {
     createConversation();
-    onClose();
+    onNavigate('chat');
+  };
+
+  const handleSelectConversation = (id: string) => {
+    selectConversation(id);
+    onNavigate('chat');
   };
 
   return (
@@ -76,8 +85,8 @@ export default function Sidebar({ open, onClose }: Props) {
                 <ConversationItem
                   key={conv.id}
                   conversation={conv}
-                  isActive={currentConversation?.id === conv.id}
-                  onSelect={() => { selectConversation(conv.id); onClose(); }}
+                  isActive={currentPage === 'chat' && currentConversation?.id === conv.id}
+                  onSelect={() => handleSelectConversation(conv.id)}
                   onDelete={() => deleteConversation(conv.id)}
                   onRename={title => renameConversation(conv.id, title)}
                 />
@@ -86,21 +95,39 @@ export default function Sidebar({ open, onClose }: Props) {
           )}
         </div>
 
-        {/* Nav items (placeholders) */}
+        {/* Nav items */}
         <div className="border-t border-navy-600 p-2 flex-shrink-0">
           <p className="text-xs text-slate-600 font-medium uppercase tracking-wider px-2 pb-2">Modules</p>
           <div className="space-y-1">
-            {NAV_ITEMS.map(({ icon: Icon, label }) => (
-              <button
-                key={label}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-navy-700/60 text-slate-500 text-xs font-medium transition-colors group"
-                title="Coming soon"
-              >
-                <Icon size={14} />
-                <span className="flex-1 text-left">{label}</span>
-                <ChevronRight size={11} className="opacity-0 group-hover:opacity-50 transition-opacity" />
-              </button>
-            ))}
+            {NAV_ITEMS.map(({ icon: Icon, label, page, active }) => {
+              const isCurrentPage = page && currentPage === page;
+              return (
+                <button
+                  key={label}
+                  onClick={() => active && page ? onNavigate(page) : undefined}
+                  title={active ? undefined : 'Coming soon'}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors group ${
+                    isCurrentPage
+                      ? 'bg-accent/15 border border-accent/25 text-accent-light'
+                      : active
+                        ? 'hover:bg-navy-700/60 text-slate-400 hover:text-slate-200 cursor-pointer'
+                        : 'text-slate-500 cursor-default opacity-60'
+                  }`}
+                >
+                  <Icon size={14} />
+                  <span className="flex-1 text-left">{label}</span>
+                  {active && !isCurrentPage && (
+                    <ChevronRight size={11} className="opacity-0 group-hover:opacity-50 transition-opacity" />
+                  )}
+                  {isCurrentPage && (
+                    <div className="w-1.5 h-1.5 rounded-full bg-accent-light" />
+                  )}
+                  {!active && (
+                    <span className="text-xs text-slate-700 font-normal">Soon</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 

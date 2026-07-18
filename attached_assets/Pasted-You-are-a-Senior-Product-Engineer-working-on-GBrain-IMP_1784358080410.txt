@@ -1,0 +1,281 @@
+You are a Senior Product Engineer working on GBrain.
+
+IMPORTANT:
+
+Do NOT redesign the backend.
+
+Do NOT rewrite the ingestion pipeline.
+
+Do NOT modify the worker.
+
+Do NOT modify RAG.
+
+Do NOT modify embeddings.
+
+Do NOT modify the extraction pipeline.
+
+Use the existing upload API and ingestion worker exactly as they already exist.
+
+The goal is only to build a professional Upload Center UI that integrates with the existing backend.
+
+======================================================
+OBJECTIVE
+======================================================
+
+Build a dedicated "Document Upload" page for GBrain.
+
+This page should become the primary place where users upload knowledge into the Industrial Knowledge Brain.
+
+The upload page must use the existing backend upload endpoint.
+
+Once a document is uploaded, the existing ingestion pipeline should continue to work exactly as it currently does.
+
+The frontend should never attempt to perform extraction itself.
+
+======================================================
+USER FLOW
+======================================================
+
+User opens
+
+Sidebar
+
+↓
+
+Documents
+
+↓
+
+Upload Documents
+
+↓
+
+Drag & Drop files
+
+↓
+
+Upload
+
+↓
+
+Backend queues ingestion
+
+↓
+
+Worker processes document
+
+↓
+
+Extraction
+
+↓
+
+Knowledge Graph update
+
+↓
+
+Embeddings update
+
+↓
+
+Brain continuously learns
+
+↓
+
+User returns to Chat
+
+↓
+
+User can immediately ask questions about uploaded knowledge.
+
+The upload page only starts ingestion.
+
+The backend is responsible for everything else.
+
+======================================================
+DO NOT CHANGE
+======================================================
+
+Do not change:
+
+- ingestion worker
+- extraction
+- graph generation
+- OCR
+- entity extraction
+- embeddings
+- continuous learning
+- document deletion behaviour
+- chat
+- search
+- API contract
+
+Only build the frontend.
+
+======================================================
+UPLOAD PAGE
+======================================================
+
+Create a new sidebar item:
+
+Documents
+
+Clicking it opens
+
+Industrial Knowledge Upload Center
+
+Modern enterprise design.
+
+Large upload card.
+
+Title
+
+Upload Industrial Documents
+
+Subtitle
+
+Upload documents to continuously improve your Industrial Knowledge Brain.
+
+======================================================
+UPLOAD METHODS
+======================================================
+
+Support
+
+Drag & Drop
+
+Browse Files
+
+Use the existing upload API.
+
+======================================================
+SUPPORTED TYPES
+======================================================
+
+Only display the file types already supported by the backend.
+
+Do not pretend PDF or images are supported if they are not.
+
+======================================================
+UPLOAD PROGRESS
+======================================================
+
+Each file should display
+
+Filename
+
+Size
+
+Status
+
+Uploading
+
+Queued
+
+Processing
+
+Completed
+
+Failed
+
+Animated progress indicator.
+
+======================================================
+SUCCESS MESSAGE
+======================================================
+
+When upload succeeds display
+
+Document uploaded successfully.
+
+Knowledge extraction has started.
+
+The Industrial Knowledge Brain is continuously learning in the background.
+
+You can now return to Chat and ask questions about this document after processing completes.
+
+======================================================
+IMPORTANT
+======================================================
+
+Do NOT store uploaded documents in the frontend.
+
+Do NOT build a document library.
+
+Do NOT build a file manager.
+
+The backend already handles document lifecycle.
+
+The frontend is only responsible for initiating ingestion and showing upload status.
+
+======================================================
+CHAT INTEGRATION
+======================================================
+
+After successful upload,
+
+show a button
+
+"Open Chat"
+
+Clicking it returns to the chat screen.
+
+The user can immediately continue chatting.
+
+No other workflow is needed.
+
+======================================================
+FUTURE READY
+======================================================
+
+Design the page so future features can be added later such as
+
+- Uploaded document history
+- Processing logs
+- Entity extraction preview
+- Graph preview
+- Source citations
+- Related assets
+
+Do NOT implement these now.
+
+Only leave space for them.
+
+======================================================
+UI STYLE
+======================================================
+
+Professional industrial enterprise software.
+
+Dark mode.
+
+Rounded cards.
+
+Consistent with existing GBrain theme.
+
+Modern animations.
+
+Responsive.
+
+======================================================
+TESTING
+======================================================
+
+After implementation:
+
+1. Run the application.
+2. Verify the Documents page opens correctly.
+3. Verify drag-and-drop works.
+4. Verify file picker works.
+5. Verify upload reaches the existing backend endpoint.
+6. Verify ingestion starts successfully.
+7. Verify no existing chat functionality breaks.
+8. Verify the user can upload a document and then return to the Chat screen.
+9. Verify there are no console errors.
+10. Take screenshots of:
+   - Documents page
+   - Upload in progress
+   - Upload completed
+   - Returning to Chat
+
+Do not stop until every check passes successfully.
