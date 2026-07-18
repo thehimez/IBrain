@@ -1,0 +1,2 @@
+- [GBrain OpenAI model setup](gbrain-openai-setup.md) — GBrain defaults to Anthropic; OpenAI requires DB config + restart for gpt-4o extended-model registration
+- [GBrain upload endpoint](gbrain-upload.md) — POST /api/upload added to serve-http.ts (no auth, text/markdown only, needs GBrain Worker for ingestion)

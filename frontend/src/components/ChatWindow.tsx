@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext';
 import { chatService } from '../services/chat';
 import ChatBubble from './ChatBubble';
 import MessageInput from './MessageInput';
+import UploadModal from './UploadModal';
 import type { Message } from '../types';
 
 function generateId() {
@@ -20,6 +21,8 @@ const SUGGESTIONS = [
 export default function ChatWindow() {
   const { currentConversation, createConversation, addMessage, updateMessage } = useApp();
   const [loading, setLoading] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadedCount, setUploadedCount] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
   const conversation = currentConversation;
 
@@ -135,7 +138,17 @@ export default function ChatWindow() {
       </div>
 
       {/* Input */}
-      <MessageInput onSend={handleSend} loading={loading} disabled={false} />
+      <MessageInput onSend={handleSend} onUpload={() => setUploadOpen(true)} loading={loading} disabled={false} />
+
+      {/* Upload modal */}
+      <UploadModal
+        open={uploadOpen}
+        onClose={() => setUploadOpen(false)}
+        onUploaded={(count) => {
+          setUploadedCount(prev => prev + count);
+          setUploadOpen(false);
+        }}
+      />
     </div>
   );
 }

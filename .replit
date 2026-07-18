@@ -21,6 +21,10 @@ args = "Start application"
 task = "workflow.run"
 args = "GBrain API"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "GBrain Worker"
+
 [[workflows.workflow]]
 name = "Start application"
 author = "agent"
@@ -45,6 +49,17 @@ waitForPort = 3001
 [workflows.workflow.metadata]
 outputType = "console"
 
+[[workflows.workflow]]
+name = "GBrain Worker"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bun run src/cli.ts jobs work --concurrency 2"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[ports]]
 localPort = 3001
 externalPort = 3001
@@ -52,3 +67,11 @@ externalPort = 3001
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+GBRAIN_CHAT_MODEL = "openai:gpt-4o"
+GBRAIN_EMBEDDING_DIMENSIONS = "1536"
+GBRAIN_EMBEDDING_MODEL = "openai:text-embedding-3-small"
+GBRAIN_EXPANSION_MODEL = "openai:gpt-4o-mini"

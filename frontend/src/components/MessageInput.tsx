@@ -1,13 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
-import { Send, Loader2 } from 'lucide-react';
+import { Send, Loader2, Paperclip } from 'lucide-react';
 
 interface Props {
   onSend: (message: string) => void;
+  onUpload?: () => void;
   disabled?: boolean;
   loading?: boolean;
 }
 
-export default function MessageInput({ onSend, disabled, loading }: Props) {
+export default function MessageInput({ onSend, onUpload, disabled, loading }: Props) {
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -42,6 +43,16 @@ export default function MessageInput({ onSend, disabled, loading }: Props) {
         <div className={`flex items-end gap-3 bg-navy-700/80 border rounded-2xl px-4 py-3 transition-colors ${
           disabled ? 'border-navy-600 opacity-60' : 'border-navy-500 focus-within:border-accent/40 focus-within:glow-blue'
         }`}>
+          {/* Upload button */}
+          <button
+            type="button"
+            onClick={onUpload}
+            disabled={disabled || loading}
+            title="Upload documents"
+            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all text-slate-500 hover:text-accent-light hover:bg-accent/10 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <Paperclip size={16} />
+          </button>
           <textarea
             ref={textareaRef}
             value={value}

@@ -2095,6 +2095,85 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   );
 
   // ---------------------------------------------------------------------------
+  // POST /api/upload — browser-based document upload (no OAuth, single-user)
+  // ---------------------------------------------------------------------------
+  // Accepts JSON { filename, content, mimeType } from the frontend UI.
+  // Supports text/plain, text/markdown, text/html, application/json.
+  // Binary formats (PDF, images) are not yet supported by the ingest pipeline.
+  // ---------------------------------------------------------------------------
+  app.post('/api/upload', express.json({ limit: '5mb' }), async (req: Request, res: Response) => {
+    try {
+      const { filename, content, mimeType } = req.body as {
+        filename?: string;
+        content?: string;
+        mimeType?: string;
+      };
+
+      if (!filename || typeof filename !== 'string') {
+        res.status(400).json({ error: 'filename is required' });
+        return;
+      }
+      if (!content || typeof content !== 'string') {
+        res.status(400).json({ error: 'content is required' });
+        return;
+      }
+
+      // Map mimeType to an allowed IngestionContentType
+      const mimeMap: Record<string, IngestionContentType> = {
+        'text/markdown': 'text/markdown',
+        'text/plain': 'text/plain',
+        'text/html': 'text/html',
+        'application/json': 'application/json',
+      };
+      const contentType: IngestionContentType = mimeMap[mimeType ?? ''] ?? 'text/plain';
+
+      const contentHash = computeContentHash(content);
+      const event: IngestionEvent = {
+        source_id: 'browser-upload',
+        source_kind: 'webhook',
+        source_uri: `browser-upload:${filename}:${Date.now()}`,
+        received_at: new Date().toISOString(),
+        content_type: contentType,
+        content,
+        content_hash: contentHash,
+        untrusted_payload: false,
+        metadata: {
+          ip: req.ip ?? '',
+          user_agent: req.header('user-agent') ?? '',
+          client_id: 'browser',
+          filename,
+        },
+      };
+
+      const validationErr = validateIngestionEvent(event);
+      if (validationErr) {
+        res.status(400).json({ error: 'invalid_event', message: validationErr.message });
+        return;
+      }
+
+      const job = await ingestQueue.add(
+        'ingest_capture',
+        { event },
+        {
+          idempotency_key: `upload:browser:${contentHash}`,
+          maxWaiting: 50,
+        },
+      );
+
+      res.status(202).json({
+        job_id: job.id,
+        content_hash: contentHash,
+        filename,
+        message: 'Accepted. Document queued for ingestion.',
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('POST /api/upload error:', msg);
+      res.status(500).json({ error: 'internal_error', message: msg });
+    }
+  });
+
+  // ---------------------------------------------------------------------------
   // POST /webhooks/github — push-triggered sync (v0.40 Federated Sync v2)
   // ---------------------------------------------------------------------------
   // Anonymous endpoint by necessity (GitHub doesn't carry an OAuth token).
