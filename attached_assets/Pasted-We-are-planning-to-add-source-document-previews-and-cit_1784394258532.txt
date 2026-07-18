@@ -1,0 +1,211 @@
+We are planning to add source document previews and citations similar to ChatGPT.
+
+Before implementing anything, I want a complete investigation of how uploaded documents are stored inside GBrain.
+
+Do NOT change any code.
+
+Do NOT implement anything yet.
+
+Only investigate and explain.
+
+====================================================
+
+Current behaviour
+
+When GPT answers a question it returns a citation such as
+
+[inbox/2026-07-18-1eb52a]
+
+I need to know exactly what this reference points to.
+
+====================================================
+
+Please investigate the complete upload lifecycle.
+
+Trace ONE uploaded document from beginning to end.
+
+For example:
+
+Restaurant.txt
+
+Trace:
+
+Upload
+
+↓
+
+Temporary upload
+
+↓
+
+Queue
+
+↓
+
+Worker
+
+↓
+
+Extraction
+
+↓
+
+Chunking
+
+↓
+
+Embeddings
+
+↓
+
+Knowledge graph
+
+↓
+
+Final storage
+
+For every stage explain
+
+• where the data is stored
+
+• table name
+
+• file path
+
+• object storage
+
+• database row
+
+• temporary directory
+
+• permanent directory
+
+====================================================
+
+Specifically answer these questions.
+
+1.
+
+Does GBrain permanently store the ORIGINAL uploaded document?
+
+YES / NO
+
+If YES,
+
+where?
+
+2.
+
+If the original document exists,
+
+how can it be retrieved?
+
+3.
+
+Is there already an API that can return the document?
+
+4.
+
+Does the citation
+
+[inbox/2026-07-18-1eb52a]
+
+point to
+
+- original document
+
+- page
+
+- chunk
+
+- markdown
+
+- generated slug
+
+- something else
+
+Explain exactly.
+
+5.
+
+If the original document is deleted,
+
+when is it deleted?
+
+Immediately?
+
+After extraction?
+
+Worker cleanup?
+
+6.
+
+Can the original upload be preserved with a small architectural change?
+
+If yes,
+
+describe the simplest solution.
+
+====================================================
+
+I also want an implementation proposal.
+
+Without changing any code,
+
+design the best architecture for source document previews.
+
+The ideal user experience is:
+
+GPT Answer
+
+↓
+
+Sources
+
+📄 Restaurant.txt
+
+📄 Maintenance_Report.pdf
+
+Clicking a source opens a modal viewer.
+
+TXT / Markdown
+
+→ render as text
+
+PDF
+
+→ embedded PDF viewer
+
+Image
+
+→ image preview
+
+DOCX
+
+→ converted preview or download
+
+The modal should have
+
+• filename
+
+• upload date
+
+• file size
+
+• download button
+
+• close button
+
+If preview is impossible,
+
+download the original file.
+
+====================================================
+
+If GBrain currently deletes the original file,
+
+propose the cleanest architecture for preserving it.
+
+Do NOT implement it yet.
+
+Only investigate and provide a technical design document.
