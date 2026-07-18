@@ -1,0 +1,251 @@
+We are starting Phase 1 of replacing the authentication layer.
+
+IMPORTANT:
+Do NOT rewrite the application.
+Do NOT touch the ingestion engine.
+Do NOT modify search.
+Do NOT modify uploads.
+Do NOT modify the knowledge graph.
+Do NOT modify chat.
+Do NOT modify source isolation.
+Do NOT change database schema unless absolutely required.
+
+The current system is working correctly.
+
+Current working features:
+
+✅ Multi-user isolation
+✅ User-specific source_id
+✅ Upload pipeline
+✅ Chat
+✅ Knowledge Graph
+✅ References
+✅ Document viewer
+✅ File download
+✅ Replit Login
+
+Everything above must continue working exactly the same after this task.
+
+-------------------------------------------------------
+OBJECTIVE
+-------------------------------------------------------
+
+Implement Google Sign-In alongside the existing Replit Sign-In.
+
+Google Sign-In should become the preferred authentication method.
+
+Replit Sign-In should continue working during Phase 1.
+
+No existing user data should break.
+
+-------------------------------------------------------
+STEP 1
+-------------------------------------------------------
+
+Before changing anything:
+
+Perform a complete investigation of the authentication system.
+
+Produce a report containing:
+
+1.
+How authentication currently works.
+
+2.
+Which backend files are responsible.
+
+3.
+Which frontend files are responsible.
+
+4.
+How source_id is generated.
+
+5.
+How users are stored.
+
+6.
+How sessions are managed.
+
+7.
+How uploads obtain source_id.
+
+8.
+How chat determines which knowledge base belongs to the user.
+
+9.
+How Knowledge Graph obtains user scope.
+
+10.
+Exactly which APIs require authentication.
+
+11.
+Every place where Replit authentication is currently hardcoded.
+
+Do NOT change code yet.
+
+-------------------------------------------------------
+STEP 2
+-------------------------------------------------------
+
+Design an authentication abstraction.
+
+Example:
+
+interface AuthProvider {
+    extractIdentity(req)
+    login()
+    logout()
+}
+
+The rest of the application must never know whether the user logged in via:
+
+- Replit
+- Google
+- GitHub
+- Microsoft
+- Apple
+
+The rest of the application should only receive:
+
+AuthenticatedUser
+
+with
+
+id
+provider
+providerUserId
+name
+email
+avatar
+sourceId
+
+-------------------------------------------------------
+STEP 3
+-------------------------------------------------------
+
+Investigate whether Better Auth can be integrated.
+
+If Better Auth fits the architecture:
+
+Use Better Auth.
+
+If it introduces unnecessary complexity with the current Express + React architecture:
+
+Explain WHY.
+
+Then recommend the next best production-grade solution.
+
+Do NOT automatically install anything before the investigation.
+
+-------------------------------------------------------
+STEP 4
+-------------------------------------------------------
+
+Google OAuth requirements.
+
+Investigate:
+
+What must be configured inside:
+
+Google Cloud Console
+
+Required:
+
+OAuth Consent Screen
+
+OAuth Client
+
+Redirect URLs
+
+Scopes
+
+Environment Variables
+
+Document everything.
+
+Do NOT ask me to configure them yet.
+
+-------------------------------------------------------
+STEP 5
+-------------------------------------------------------
+
+Migration Requirements
+
+Existing users must continue working.
+
+Current Replit users must still log in.
+
+Google users should be supported alongside Replit users.
+
+No database data should be lost.
+
+No pages should move.
+
+No source_ids should change.
+
+No uploaded documents should disappear.
+
+Knowledge graph must continue working.
+
+-------------------------------------------------------
+STEP 6
+-------------------------------------------------------
+
+If database migration is required:
+
+Generate the migration.
+
+Explain every column added.
+
+Explain why it is needed.
+
+Migration must be backward compatible.
+
+-------------------------------------------------------
+STEP 7
+-------------------------------------------------------
+
+Only after all investigations are complete:
+
+Generate an implementation plan.
+
+Break implementation into:
+
+Phase 1
+Phase 2
+Phase 3
+
+Estimate risk.
+
+Highlight files that will change.
+
+Highlight files that will NOT change.
+
+-------------------------------------------------------
+STEP 8
+-------------------------------------------------------
+
+Do NOT implement anything until the investigation report is complete.
+
+The investigation report is the deliverable for this task.
+
+-------------------------------------------------------
+Success Criteria
+
+The report should convince me that:
+
+• Google authentication can be added safely.
+
+• Existing Replit login continues working.
+
+• Existing uploads continue working.
+
+• Existing references continue working.
+
+• Existing Knowledge Graph continues working.
+
+• Existing user isolation continues working.
+
+• Existing source_id architecture remains untouched.
+
+No code should be written before the investigation is finished.
