@@ -635,7 +635,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
       res.json({
         connected: true,
         name: 'Industrial Knowledge Brain',
-        pageCount: (stats as any).pages ?? (stats as any).total_pages ?? 0,
+        pageCount: (stats as any).page_count ?? (stats as any).pages ?? (stats as any).total_pages ?? 0,
         engine: config.engine ?? 'pglite',
         version: (await import('../version.ts')).VERSION,
       });

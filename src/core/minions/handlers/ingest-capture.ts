@@ -113,7 +113,12 @@ export function makeIngestCaptureHandler(engine: BrainEngine) {
     // by passing { noEmbed: false } in job.data.
     const noEmbed = (data as { noEmbed?: unknown }).noEmbed !== false;
 
-    const result = await importFromContent(engine, slug, event.content, { noEmbed });
+    const result = await importFromContent(engine, slug, event.content, {
+      noEmbed,
+      sourceId: event.source_id,
+      source_kind: event.source_kind,
+      source_uri: event.source_uri,
+    });
 
     return {
       slug,
