@@ -2268,6 +2268,29 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
       const contentType: IngestionContentType = mimeMap[mimeType ?? ''] ?? 'text/plain';
 
       const contentHash = computeContentHash(content);
+
+      // Persist the original file in the files table before queuing ingestion.
+      // storage_path uses the 'inline:<hash>' convention for text uploads that
+      // are stored in the DB rather than an external object store.
+      const storagePath = `inline:${contentHash}`;
+      let fileId: number | null = null;
+      try {
+        const fileResult = await engine.upsertFile({
+          source_id: uploader.sourceId,
+          filename,
+          storage_path: storagePath,
+          mime_type: contentType,
+          size_bytes: Buffer.byteLength(content, 'utf8'),
+          content_hash: contentHash,
+          content_raw: content,
+          metadata: { orig_filename: filename, uploaded_by: uploader.id },
+        });
+        fileId = fileResult.id;
+      } catch (fileErr) {
+        // Non-fatal: proceed with ingestion even if file storage fails.
+        console.warn('POST /api/upload: failed to store file row:', fileErr);
+      }
+
       const event: IngestionEvent = {
         source_id: uploader.sourceId,
         source_kind: 'webhook',
@@ -2293,7 +2316,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
 
       const job = await ingestQueue.add(
         'ingest_capture',
-        { event },
+        { event, file_id: fileId },
         {
           idempotency_key: `upload:${uploader.id}:${contentHash}`,
           maxWaiting: 50,
@@ -2302,6 +2325,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
 
       res.status(202).json({
         job_id: job.id,
+        file_id: fileId,
         content_hash: contentHash,
         filename,
         message: 'Accepted. Document queued for ingestion.',
@@ -2309,6 +2333,129 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('POST /api/upload error:', msg);
+      res.status(500).json({ error: 'internal_error', message: msg });
+    }
+  });
+
+  // ---------------------------------------------------------------------------
+  // GET /api/files/by-slug — resolve a citation page slug to a file record
+  // GET /api/files/:id      — file metadata + preview content (text types)
+  // GET /api/files/:id/download — stream the original file for download
+  // ---------------------------------------------------------------------------
+  // All endpoints require Replit auth and scope every query to the caller's
+  // source_id so users can never access each other's documents.
+  // ---------------------------------------------------------------------------
+
+  // Helper: resolve auth or return 401.
+  const requireReplitAuth = async (req: Request, res: Response) => {
+    const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
+    if (!authInfo) {
+      res.status(401).json({ error: 'not_authenticated', message: 'Sign in to access files.' });
+      return null;
+    }
+    return upsertUser(engine, authInfo);
+  };
+
+  // Postgres.js returns BIGINT/SERIAL columns as BigInt in some configurations.
+  // This helper safely converts them to JS numbers for JSON serialization.
+  const num = (v: unknown): number | null =>
+    v === null || v === undefined ? null : Number(v);
+
+  // GET /api/files/by-slug?slug=inbox/2026-07-18-1eb52a
+  app.get('/api/files/by-slug', async (req: Request, res: Response) => {
+    try {
+      const user = await requireReplitAuth(req, res);
+      if (!user) return;
+      const slug = typeof req.query.slug === 'string' ? req.query.slug : null;
+      if (!slug) {
+        res.status(400).json({ error: 'slug query parameter is required' });
+        return;
+      }
+      const file = await engine.getFileByPageSlug(slug, user.sourceId);
+      if (!file) {
+        res.status(404).json({ error: 'not_found' });
+        return;
+      }
+      res.json({
+        id: num(file.id),
+        filename: file.filename,
+        mime_type: file.mime_type,
+        size_bytes: num(file.size_bytes),
+        content_hash: file.content_hash,
+        page_slug: file.page_slug,
+        page_id: num(file.page_id),
+        uploaded_at: file.created_at,
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('GET /api/files/by-slug error:', msg);
+      res.status(500).json({ error: 'internal_error', message: msg });
+    }
+  });
+
+  // GET /api/files/:id — metadata + preview content
+  app.get('/api/files/:id', async (req: Request, res: Response) => {
+    try {
+      const user = await requireReplitAuth(req, res);
+      if (!user) return;
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) {
+        res.status(400).json({ error: 'invalid id' });
+        return;
+      }
+      const file = await engine.getFileById(id, user.sourceId);
+      if (!file) {
+        res.status(404).json({ error: 'not_found' });
+        return;
+      }
+      const isText = (file.mime_type ?? '').startsWith('text/') ||
+        file.mime_type === 'application/json';
+      res.json({
+        id: num(file.id),
+        filename: file.filename,
+        mime_type: file.mime_type,
+        size_bytes: num(file.size_bytes),
+        content_hash: file.content_hash,
+        page_slug: file.page_slug,
+        page_id: num(file.page_id),
+        uploaded_at: file.created_at,
+        content: isText ? (file.content_raw ?? null) : null,
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('GET /api/files/:id error:', msg);
+      res.status(500).json({ error: 'internal_error', message: msg });
+    }
+  });
+
+  // GET /api/files/:id/download — stream original file
+  app.get('/api/files/:id/download', async (req: Request, res: Response) => {
+    try {
+      const user = await requireReplitAuth(req, res);
+      if (!user) return;
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) {
+        res.status(400).json({ error: 'invalid id' });
+        return;
+      }
+      const file = await engine.getFileById(id, user.sourceId);
+      if (!file) {
+        res.status(404).json({ error: 'not_found' });
+        return;
+      }
+      if (!file.content_raw) {
+        res.status(404).json({ error: 'content_not_available', message: 'Original file content is not stored inline.' });
+        return;
+      }
+      const mimeType = file.mime_type ?? 'text/plain';
+      const safeFilename = encodeURIComponent(file.filename).replace(/%20/g, '+');
+      res.setHeader('Content-Type', `${mimeType}; charset=utf-8`);
+      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${safeFilename}`);
+      res.setHeader('Content-Length', Buffer.byteLength(file.content_raw, 'utf8'));
+      res.send(file.content_raw);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('GET /api/files/:id/download error:', msg);
       res.status(500).json({ error: 'internal_error', message: msg });
     }
   });

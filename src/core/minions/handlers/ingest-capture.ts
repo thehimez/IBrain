@@ -120,6 +120,24 @@ export function makeIngestCaptureHandler(engine: BrainEngine) {
       source_uri: event.source_uri,
     });
 
+    // Link the files row (if one was created during upload) to this page now
+    // that we know the page id. The file_id is passed through job.data by
+    // the /api/upload endpoint.
+    const fileId = typeof (data as { file_id?: unknown }).file_id === 'number'
+      ? (data as { file_id: number }).file_id
+      : null;
+    if (fileId !== null && result.status !== 'error') {
+      try {
+        const page = await engine.getPage(slug, { sourceId: event.source_id });
+        if (page) {
+          await engine.updateFilePageLink(fileId, page.id, slug);
+        }
+      } catch (linkErr) {
+        // Non-fatal: the document is ingested; linking is best-effort.
+        console.warn('ingest_capture: failed to link file to page:', linkErr);
+      }
+    }
+
     return {
       slug,
       status: result.status,

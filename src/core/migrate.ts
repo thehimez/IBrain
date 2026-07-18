@@ -5522,6 +5522,20 @@ export const MIGRATIONS: Migration[] = [
       return rows.length > 0;
     },
   },
+  {
+    version: 124,
+    name: 'files_content_raw',
+    // Adds content_raw TEXT to the files table so that text-based uploads
+    // (text/plain, text/markdown, text/html, application/json) can store the
+    // original uploaded content inline. Binary types (PDF, images) will use
+    // storage_path to reference external storage and leave content_raw NULL.
+    // storage_path for inline uploads uses the convention 'inline:<content_hash>'.
+    idempotent: true,
+    sql: `
+      ALTER TABLE files
+        ADD COLUMN IF NOT EXISTS content_raw TEXT;
+    `,
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.length > 0

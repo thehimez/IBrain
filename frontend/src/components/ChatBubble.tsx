@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Brain, User, Copy, Check, AlertCircle, BookOpen } from 'lucide-react';
+import { Brain, User, Copy, Check, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Message } from '../types';
 import MarkdownRenderer from './MarkdownRenderer';
 import LoadingIndicator from './LoadingIndicator';
+import SourceChips from './SourceChips';
 
 interface Props {
   message: Message;
@@ -56,20 +57,9 @@ export default function ChatBubble({ message }: Props) {
           )}
         </div>
 
-        {/* Citations */}
+        {/* Source chips — replaces raw citation slugs */}
         {!isUser && message.citations && message.citations.length > 0 && !message.isStreaming && (
-          <div className="flex flex-wrap gap-1.5 px-1">
-            <BookOpen size={11} className="text-slate-600 mt-0.5 flex-shrink-0" />
-            {message.citations.map((c, i) => (
-              <span
-                key={i}
-                className="text-xs bg-navy-700 border border-navy-600 text-slate-400 px-2 py-0.5 rounded-full font-mono"
-                title={c.page_slug}
-              >
-                [{c.citation_index}] {c.page_slug.split('/').pop()}
-              </span>
-            ))}
-          </div>
+          <SourceChips citations={message.citations} />
         )}
 
         {/* Gaps */}

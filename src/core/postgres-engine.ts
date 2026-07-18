@@ -3790,8 +3790,8 @@ export class PostgresEngine implements BrainEngine {
     const sourceId = spec.source_id ?? 'default';
     const metadata = (spec.metadata ?? {}) as Parameters<typeof sql.json>[0];
     const rows = await sql<Array<{ id: number; created: boolean }>>`
-      INSERT INTO files (source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, metadata)
-      VALUES (${sourceId}, ${spec.page_slug ?? null}, ${spec.page_id ?? null}, ${spec.filename}, ${spec.storage_path}, ${spec.mime_type ?? null}, ${spec.size_bytes ?? null}, ${spec.content_hash}, ${sql.json(metadata)})
+      INSERT INTO files (source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata)
+      VALUES (${sourceId}, ${spec.page_slug ?? null}, ${spec.page_id ?? null}, ${spec.filename}, ${spec.storage_path}, ${spec.mime_type ?? null}, ${spec.size_bytes ?? null}, ${spec.content_hash}, ${spec.content_raw ?? null}, ${sql.json(metadata)})
       ON CONFLICT (storage_path) DO UPDATE SET
         page_slug = EXCLUDED.page_slug,
         page_id = EXCLUDED.page_id,
@@ -3799,6 +3799,7 @@ export class PostgresEngine implements BrainEngine {
         mime_type = EXCLUDED.mime_type,
         size_bytes = EXCLUDED.size_bytes,
         content_hash = EXCLUDED.content_hash,
+        content_raw = EXCLUDED.content_raw,
         metadata = EXCLUDED.metadata
       RETURNING id, (xmax = 0) AS created
     `;
@@ -3809,7 +3810,7 @@ export class PostgresEngine implements BrainEngine {
   async getFile(sourceId: string, storagePath: string): Promise<FileRow | null> {
     const sql = this.sql;
     const rows = await sql<Array<FileRow>>`
-      SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, metadata, created_at
+      SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata, created_at
       FROM files
       WHERE source_id = ${sourceId} AND storage_path = ${storagePath}
       LIMIT 1
@@ -3817,10 +3818,41 @@ export class PostgresEngine implements BrainEngine {
     return rows.length > 0 ? rows[0] : null;
   }
 
+  async getFileById(id: number, sourceId: string): Promise<FileRow | null> {
+    const sql = this.sql;
+    const rows = await sql<Array<FileRow>>`
+      SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata, created_at
+      FROM files
+      WHERE id = ${id} AND source_id = ${sourceId}
+      LIMIT 1
+    `;
+    return rows.length > 0 ? rows[0] : null;
+  }
+
+  async getFileByPageSlug(slug: string, sourceId: string): Promise<FileRow | null> {
+    const sql = this.sql;
+    const rows = await sql<Array<FileRow>>`
+      SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata, created_at
+      FROM files
+      WHERE page_slug = ${slug} AND source_id = ${sourceId}
+      ORDER BY created_at DESC
+      LIMIT 1
+    `;
+    return rows.length > 0 ? rows[0] : null;
+  }
+
+  async updateFilePageLink(id: number, pageId: number, pageSlug: string): Promise<void> {
+    const sql = this.sql;
+    await sql`
+      UPDATE files SET page_id = ${pageId}, page_slug = ${pageSlug}
+      WHERE id = ${id}
+    `;
+  }
+
   async listFilesForPage(pageId: number): Promise<FileRow[]> {
     const sql = this.sql;
     const rows = await sql<Array<FileRow>>`
-      SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, metadata, created_at
+      SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata, created_at
       FROM files
       WHERE page_id = ${pageId}
       ORDER BY created_at ASC

@@ -77,6 +77,7 @@ export interface FileRow {
   mime_type: string | null;
   size_bytes: number | null;
   content_hash: string;
+  content_raw: string | null;
   metadata: Record<string, unknown>;
   created_at: Date;
 }
@@ -95,6 +96,7 @@ export interface FileSpec {
   mime_type?: string | null;
   size_bytes?: number | null;
   content_hash: string;
+  content_raw?: string | null;
   metadata?: Record<string, unknown>;
 }
 
@@ -1451,6 +1453,9 @@ export interface BrainEngine {
   // external store).
   upsertFile(spec: FileSpec): Promise<{ id: number; created: boolean }>;
   getFile(sourceId: string, storagePath: string): Promise<FileRow | null>;
+  getFileById(id: number, sourceId: string): Promise<FileRow | null>;
+  getFileByPageSlug(slug: string, sourceId: string): Promise<FileRow | null>;
+  updateFilePageLink(id: number, pageId: number, pageSlug: string): Promise<void>;
   listFilesForPage(pageId: number): Promise<FileRow[]>;
 
   // ============================================================

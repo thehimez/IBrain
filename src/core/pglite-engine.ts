@@ -3760,8 +3760,8 @@ export class PGLiteEngine implements BrainEngine {
   async upsertFile(spec: FileSpec): Promise<{ id: number; created: boolean }> {
     const sourceId = spec.source_id ?? 'default';
     const result = await this.db.query<{ id: number; created: boolean }>(
-      `INSERT INTO files (source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, metadata)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
+      `INSERT INTO files (source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb)
        ON CONFLICT (storage_path) DO UPDATE SET
          page_slug = EXCLUDED.page_slug,
          page_id = EXCLUDED.page_id,
@@ -3769,6 +3769,7 @@ export class PGLiteEngine implements BrainEngine {
          mime_type = EXCLUDED.mime_type,
          size_bytes = EXCLUDED.size_bytes,
          content_hash = EXCLUDED.content_hash,
+         content_raw = EXCLUDED.content_raw,
          metadata = EXCLUDED.metadata
        RETURNING id, (xmax = 0) AS created`,
       [
@@ -3780,6 +3781,7 @@ export class PGLiteEngine implements BrainEngine {
         spec.mime_type ?? null,
         spec.size_bytes ?? null,
         spec.content_hash,
+        spec.content_raw ?? null,
         JSON.stringify(spec.metadata ?? {}),
       ]
     );
@@ -3791,7 +3793,7 @@ export class PGLiteEngine implements BrainEngine {
 
   async getFile(sourceId: string, storagePath: string): Promise<FileRow | null> {
     const result = await this.db.query<FileRow>(
-      `SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, metadata, created_at
+      `SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata, created_at
        FROM files
        WHERE source_id = $1 AND storage_path = $2
        LIMIT 1`,
@@ -3800,9 +3802,39 @@ export class PGLiteEngine implements BrainEngine {
     return result.rows.length > 0 ? (result.rows[0] as FileRow) : null;
   }
 
+  async getFileById(id: number, sourceId: string): Promise<FileRow | null> {
+    const result = await this.db.query<FileRow>(
+      `SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata, created_at
+       FROM files
+       WHERE id = $1 AND source_id = $2
+       LIMIT 1`,
+      [id, sourceId]
+    );
+    return result.rows.length > 0 ? (result.rows[0] as FileRow) : null;
+  }
+
+  async getFileByPageSlug(slug: string, sourceId: string): Promise<FileRow | null> {
+    const result = await this.db.query<FileRow>(
+      `SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata, created_at
+       FROM files
+       WHERE page_slug = $1 AND source_id = $2
+       ORDER BY created_at DESC
+       LIMIT 1`,
+      [slug, sourceId]
+    );
+    return result.rows.length > 0 ? (result.rows[0] as FileRow) : null;
+  }
+
+  async updateFilePageLink(id: number, pageId: number, pageSlug: string): Promise<void> {
+    await this.db.query(
+      `UPDATE files SET page_id = $1, page_slug = $2 WHERE id = $3`,
+      [pageId, pageSlug, id]
+    );
+  }
+
   async listFilesForPage(pageId: number): Promise<FileRow[]> {
     const result = await this.db.query<FileRow>(
-      `SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, metadata, created_at
+      `SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, content_raw, metadata, created_at
        FROM files
        WHERE page_id = $1
        ORDER BY created_at ASC`,
