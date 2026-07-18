@@ -3263,17 +3263,12 @@ export const MIGRATIONS: Migration[] = [
     sql: '',
     handler: async (engine) => {
       if (engine.kind === 'postgres') {
+        // DROP INDEX CONCURRENTLY cannot run inside a DO $ ... $ plpgsql block.
+        // Run it as a direct statement instead. IF EXISTS makes it a no-op when
+        // the index is absent; when an invalid remnant exists this clears it.
         await engine.runMigration(
           66,
-          `DO $$ BEGIN
-             IF EXISTS (
-               SELECT 1 FROM pg_index i
-               JOIN pg_class c ON c.oid = i.indexrelid
-               WHERE c.relname = 'idx_chunks_embedding_null' AND NOT i.indisvalid
-             ) THEN
-               EXECUTE 'DROP INDEX CONCURRENTLY IF EXISTS idx_chunks_embedding_null';
-             END IF;
-           END $$;`
+          `DROP INDEX CONCURRENTLY IF EXISTS idx_chunks_embedding_null;`
         );
         await engine.runMigration(
           66,
