@@ -2,7 +2,7 @@ import { Plus, BookOpen, Network, LayoutDashboard, Settings, X, ChevronRight } f
 import { useApp } from '../context/AppContext';
 import ConversationItem from './ConversationItem';
 
-type Page = 'chat' | 'documents';
+type Page = 'chat' | 'documents' | 'graph';
 
 interface Props {
   open: boolean;
@@ -13,7 +13,7 @@ interface Props {
 
 const NAV_ITEMS = [
   { icon: BookOpen,        label: 'Documents',      page: 'documents' as Page, active: true  },
-  { icon: Network,         label: 'Knowledge Graph', page: null,               active: false },
+  { icon: Network,         label: 'Knowledge Graph', page: 'graph' as Page,    active: true  },
   { icon: LayoutDashboard, label: 'Dashboard',       page: null,               active: false },
   { icon: Settings,        label: 'Settings',        page: null,               active: false },
 ];

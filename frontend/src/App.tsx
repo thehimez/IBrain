@@ -5,9 +5,10 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import ChatWindow from './components/ChatWindow';
 import DocumentsPage from './pages/DocumentsPage';
+import KnowledgeGraphPage from './pages/KnowledgeGraphPage';
 import LoginScreen from './components/LoginScreen';
 
-type Page = 'chat' | 'documents';
+type Page = 'chat' | 'documents' | 'graph';
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -33,6 +34,7 @@ function Layout() {
           {currentPage === 'documents' && (
             <DocumentsPage onOpenChat={() => navigateTo('chat')} />
           )}
+          {currentPage === 'graph' && <KnowledgeGraphPage />}
         </main>
       </div>
     </div>

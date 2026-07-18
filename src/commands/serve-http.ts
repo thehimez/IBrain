@@ -644,6 +644,111 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     }
   });
 
+  // GET /api/graph — user-scoped knowledge graph (pages + entities + relationships)
+  app.get('/api/graph', async (req: Request, res: Response) => {
+    try {
+      const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
+      if (!authInfo) {
+        res.status(401).json({ error: 'not_authenticated' });
+        return;
+      }
+      const user = await upsertUser(engine, authInfo);
+      const sid = user.sourceId;
+
+      const pages = await engine.executeRaw<{
+        id: number; slug: string; title: string; type: string; created_at: string;
+      }>(
+        `SELECT id, slug, title, type, created_at FROM pages
+         WHERE source_id = $1 AND deleted_at IS NULL ORDER BY id`,
+        [sid],
+      );
+
+      const takesRows = await engine.executeRaw<{
+        id: number; page_id: number; kind: string; holder: string; claim: string;
+      }>(
+        `SELECT t.id, t.page_id, t.kind, t.holder, left(t.claim, 200) AS claim
+         FROM takes t
+         JOIN pages p ON p.id = t.page_id
+         WHERE p.source_id = $1 AND t.active = true
+         ORDER BY t.page_id, t.id`,
+        [sid],
+      );
+
+      const linksRows = await engine.executeRaw<{
+        id: number; from_page_id: number; to_page_id: number; link_type: string; context: string;
+      }>(
+        `SELECT l.id, l.from_page_id, l.to_page_id, l.link_type, left(l.context, 150) AS context
+         FROM links l
+         JOIN pages fp ON fp.id = l.from_page_id
+         JOIN pages tp ON tp.id = l.to_page_id
+         WHERE fp.source_id = $1 AND tp.source_id = $1
+         ORDER BY l.id`,
+        [sid],
+      );
+
+      type GraphNode = { id: string; label: string; type: string; slug?: string; kind?: string; claim?: string; pageCount?: number };
+      type GraphEdge = { id: string; source: string; target: string; label: string; context?: string };
+
+      const nodes: GraphNode[] = [];
+      const edges: GraphEdge[] = [];
+
+      // Also fetch source_uri for better labels
+      const pagesMeta = await engine.executeRaw<{ id: number; source_uri: string | null }>(
+        `SELECT id, source_uri FROM pages WHERE source_id = $1 AND deleted_at IS NULL`,
+        [sid],
+      );
+      const sourceUriMap = new Map(pagesMeta.map(r => [r.id, r.source_uri]));
+
+      // Page nodes
+      const pageMap = new Map<number, string>();
+      for (const p of pages) {
+        const nodeId = `page:${p.id}`;
+        pageMap.set(p.id, nodeId);
+        // Derive best label: prefer filename from source_uri, fall back to title, then slug tail
+        const uri = sourceUriMap.get(p.id) ?? '';
+        const uriParts = uri.split(':');
+        const filename = uriParts.length >= 3 ? uriParts[uriParts.length - 2] : null;
+        const label = filename ?? (p.title && !/^[\da-f\s-]+$/i.test(p.title) ? p.title : null) ?? (p.slug.split('/').pop() ?? p.slug);
+        nodes.push({ id: nodeId, label, type: 'page', slug: p.slug, kind: p.type });
+      }
+
+      // Entity nodes from takes — deduplicate by (kind, holder)
+      const entityMap = new Map<string, string>();
+      for (const t of takesRows) {
+        const key = `${t.kind}::${t.holder}`;
+        if (!entityMap.has(key)) {
+          const nodeId = `entity:${t.id}`;
+          entityMap.set(key, nodeId);
+          nodes.push({ id: nodeId, label: t.holder, type: 'entity', kind: t.kind, claim: t.claim });
+        }
+        const pageNodeId = pageMap.get(t.page_id);
+        const entNodeId = entityMap.get(key);
+        if (pageNodeId && entNodeId) {
+          edges.push({ id: `take:${t.id}`, source: pageNodeId, target: entNodeId, label: t.kind ?? 'mentions' });
+        }
+      }
+
+      // Page-to-page link edges
+      for (const l of linksRows) {
+        const f = pageMap.get(l.from_page_id);
+        const t = pageMap.get(l.to_page_id);
+        if (f && t) {
+          edges.push({ id: `link:${l.id}`, source: f, target: t, label: l.link_type || 'links to', context: l.context });
+        }
+      }
+
+      res.json({
+        stats: { pages: pages.length, entities: entityMap.size, relationships: edges.length },
+        nodes,
+        edges,
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('GET /api/graph error:', msg);
+      res.status(500).json({ error: 'internal_error', message: msg });
+    }
+  });
+
   // POST /api/chat — run a query through the brain's think pipeline
   app.post('/api/chat', express.json(), async (req: Request, res: Response) => {
     try {

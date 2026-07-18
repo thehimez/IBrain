@@ -1,0 +1,204 @@
+We have completed the multi-user migration.
+
+However, there are still two major issues that need to be resolved.
+
+====================================================
+ISSUE 1 — Verify Knowledge Retrieval
+====================================================
+
+The uploaded document is not always retrievable.
+
+Example:
+
+Restaurant document contains:
+
+Owner: Amit Verma
+
+Restaurant Manager: Neha Kapoor
+
+Yet asking
+
+"Who owns the restaurant?"
+
+or
+
+"Who is the restaurant manager?"
+
+returns a Knowledge Gap.
+
+This should not happen.
+
+I do NOT want guesses.
+
+I want a complete investigation.
+
+Trace the uploaded document through the entire pipeline.
+
+Verify:
+
+1. Upload succeeds.
+
+2. Worker processes document.
+
+3. Pages are created.
+
+4. Chunks are created.
+
+5. Embeddings are created.
+
+6. Facts/entities are extracted.
+
+7. Knowledge graph nodes are created.
+
+8. Vector search retrieves the correct chunks.
+
+9. Keyword search retrieves the correct chunks.
+
+10. Hybrid RAG combines both correctly.
+
+11. GPT receives the retrieved context.
+
+12. GPT answer includes the correct information.
+
+For every stage print:
+
+✅ Success
+
+❌ Failure
+
+If retrieval fails,
+
+identify the exact stage where the information disappears.
+
+Do NOT modify code until the root cause has been identified.
+
+====================================================
+ISSUE 2 — Build Knowledge Graph Page
+====================================================
+
+The sidebar currently contains
+
+Knowledge Graph
+
+but it is only a placeholder.
+
+Replace it with a real page.
+
+The page should display ONLY the authenticated user's graph.
+
+Never display another user's data.
+
+The graph should automatically load from the existing database.
+
+Do NOT generate fake data.
+
+Use the entities and relationships already extracted by GBrain.
+
+====================================================
+
+The graph page should contain:
+
+- Total entities
+- Total relationships
+- Search entities
+- Filter by type
+- Interactive graph visualization
+- Click any node
+- Show connected nodes
+- Show source document
+- Show relationship labels
+
+Example:
+
+Pump P203
+
+↓
+
+Bearing
+
+↓
+
+Lubrication
+
+↓
+
+Rahul Sharma
+
+↓
+
+Maintenance Report
+
+or
+
+Restaurant
+
+↓
+
+Amit Verma
+
+↓
+
+Neha Kapoor
+
+↓
+
+Kitchen
+
+↓
+
+Supplier
+
+↓
+
+Training
+
+Clicking a node should open a side panel showing
+
+- Entity name
+- Entity type
+- Connected entities
+- Source document
+- Number of relationships
+
+====================================================
+USER ISOLATION
+====================================================
+
+Every graph query must use the authenticated user's source_id.
+
+Never show graph data belonging to another user.
+
+====================================================
+TESTING
+====================================================
+
+Upload the Pump document.
+
+Verify the graph contains pump-related entities only.
+
+Upload the Restaurant document as another user.
+
+Verify the graph contains restaurant-related entities only.
+
+Verify each user sees only their own graph.
+
+====================================================
+DELIVERABLE
+====================================================
+
+Run the application.
+
+Verify retrieval works.
+
+Verify graph visualization works.
+
+Verify user isolation.
+
+Take screenshots showing:
+
+1. Working retrieval
+2. Interactive Knowledge Graph
+3. User A graph
+4. User B graph
+
+Do not stop until all tests pass.
