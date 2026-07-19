@@ -5596,6 +5596,18 @@ export const MIGRATIONS: Migration[] = [
       return Number(rows[0]?.count ?? 0) > 0;
     },
   },
+  {
+    version: 126,
+    name: 'users_replit_user_id_nullable',
+    // replit_user_id must be nullable for non-Replit providers (Google, etc.).
+    // Replit users always have this field set; Google users leave it NULL.
+    // The unique constraint is kept — it just permits NULLs (which are not
+    // considered equal in PostgreSQL unique indexes, so multiple NULLs are fine).
+    idempotent: true,
+    sql: `
+      ALTER TABLE users ALTER COLUMN replit_user_id DROP NOT NULL;
+    `,
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.length > 0
