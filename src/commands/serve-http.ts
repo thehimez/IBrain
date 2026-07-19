@@ -931,7 +931,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // ---------------------------------------------------------------------------
   const ccRateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 50,
+    limit: 50,
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: 'too_many_requests', error_description: 'Rate limit exceeded. Try again in 15 minutes.' },
@@ -944,7 +944,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // Defense-in-depth on the highest-privileged URL the server exposes.
   const adminAuthRateLimiter = rateLimit({
     windowMs: 60 * 1000,
-    max: 10,
+    limit: 10,
     standardHeaders: true,
     legacyHeaders: false,
     message: 'Too many magic-link attempts. Wait a minute before trying again.',

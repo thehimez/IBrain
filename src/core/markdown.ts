@@ -1,5 +1,5 @@
 import matter from 'gray-matter';
-import { safeLoad as yamlSafeLoad } from 'js-yaml';
+import { load as yamlSafeLoad } from 'js-yaml';
 import type { Page, PageType } from './types.ts';
 import { slugifyPath } from './sync.ts';
 
