@@ -1,0 +1,276 @@
+We are continuing the GBrain Mobile App project from a previous Replit AI session.
+
+IMPORTANT
+
+Do NOT start building anything immediately.
+
+First determine exactly what has already been completed.
+
+The previous AI session stopped because the monthly quota was exhausted.
+
+From the previous session I know it completed at least:
+
+- Explored the backend API surface
+- Explored frontend design tokens
+- Edited serve-http.ts
+- Created:
+  - package.json
+  - app.json
+  - babel.config.js
+  - metro.config.js
+  - tsconfig.json
+  - tailwind.config.js
+  - global.css
+  - .env.example
+
+The session stopped before finishing the mobile application.
+
+==================================================
+
+YOUR FIRST TASK
+
+Perform a complete project audit.
+
+Do NOT assume anything.
+
+Inspect every file.
+
+==================================================
+
+Determine:
+
+1.
+
+Has the React Native Expo project been fully created?
+
+If yes, list every file.
+
+If not, list exactly what is missing.
+
+--------------------------------------------------
+
+2.
+
+Can the mobile project run?
+
+Check whether
+
+npx expo start
+
+would work.
+
+If not, explain why.
+
+--------------------------------------------------
+
+3.
+
+Inspect package.json.
+
+Are all dependencies installed correctly?
+
+Are any dependencies missing?
+
+--------------------------------------------------
+
+4.
+
+Inspect the folder structure.
+
+Determine whether it follows a production-quality Expo architecture.
+
+--------------------------------------------------
+
+5.
+
+Check whether these exist:
+
+App entry
+
+Expo Router
+
+Navigation
+
+Screens
+
+Components
+
+Hooks
+
+Services
+
+API client
+
+Theme
+
+Assets
+
+Types
+
+Utils
+
+Constants
+
+--------------------------------------------------
+
+6.
+
+Check whether authentication is implemented.
+
+Can users:
+
+• Sign in with Google
+
+• Sign in with Replit
+
+using the existing backend?
+
+Or is it still incomplete?
+
+--------------------------------------------------
+
+7.
+
+Check whether API wrappers exist.
+
+Determine whether mobile is already connected to:
+
+Chat
+
+Upload
+
+Graph
+
+Documents
+
+Profile
+
+Logout
+
+--------------------------------------------------
+
+8.
+
+Check whether React Query is configured.
+
+--------------------------------------------------
+
+9.
+
+Check whether NativeWind is configured correctly.
+
+--------------------------------------------------
+
+10.
+
+Check whether Expo SecureStore is configured.
+
+--------------------------------------------------
+
+11.
+
+Check whether Document Picker is implemented.
+
+--------------------------------------------------
+
+12.
+
+Check whether Image Picker is implemented.
+
+--------------------------------------------------
+
+13.
+
+Check whether the app can build successfully.
+
+List every compile error.
+
+--------------------------------------------------
+
+14.
+
+Compare the mobile project against the existing web application.
+
+Which major features are still missing?
+
+Examples:
+
+Login
+
+Chat
+
+Documents
+
+Upload
+
+Knowledge Graph
+
+Profile
+
+Settings
+
+Streaming responses
+
+Source chips
+
+Markdown rendering
+
+File preview
+
+Download
+
+--------------------------------------------------
+
+15.
+
+Create a completion report.
+
+Use a table.
+
+Example
+
+Completed
+In Progress
+Not Started
+Blocked
+
+Estimate overall completion percentage.
+
+==================================================
+
+AFTER THE AUDIT
+
+Create a prioritized implementation plan.
+
+Phase 1
+
+Critical missing functionality
+
+Phase 2
+
+Core screens
+
+Phase 3
+
+Advanced features
+
+Phase 4
+
+Polish
+
+==================================================
+
+Only AFTER the audit is finished should implementation begin.
+
+Never overwrite existing work.
+
+Reuse every existing file whenever possible.
+
+Continue from the current state instead of rebuilding the project.
+
+Finally, list:
+
+• What was already completed
+• What still needs to be done
+• The exact next task you will start with
+• Estimated percentage complete
