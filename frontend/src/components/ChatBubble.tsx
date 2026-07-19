@@ -38,7 +38,7 @@ export default function ChatBubble({ message }: Props) {
       <div className={`max-w-[80%] flex flex-col gap-1.5 ${isUser ? 'items-end' : 'items-start'}`}>
         {/* Header */}
         <div className={`flex items-center gap-2 text-xs text-slate-500 ${isUser ? 'flex-row-reverse' : ''}`}>
-          <span className="font-medium">{isUser ? 'You' : 'GBrain'}</span>
+          <span className="font-medium">{isUser ? 'You' : 'XandaCross'}</span>
           <span>{format(message.timestamp, 'h:mm a')}</span>
         </div>
 

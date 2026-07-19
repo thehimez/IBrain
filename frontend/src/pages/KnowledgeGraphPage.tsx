@@ -626,7 +626,7 @@ function EmptyState() {
         </div>
         <h3 className="text-base font-semibold text-slate-300 mb-2">No graph data yet</h3>
         <p className="text-sm text-slate-500 leading-relaxed mb-4">
-          Upload documents and GBrain will extract entities and relationships to populate your knowledge graph.
+          Upload documents and XandaCross will extract entities and relationships to populate your knowledge graph.
         </p>
         <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-navy-800/60 border border-navy-700 text-left">
           <Info size={13} className="text-accent-light flex-shrink-0" />

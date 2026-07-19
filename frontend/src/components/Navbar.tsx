@@ -28,7 +28,7 @@ export default function Navbar({ onToggleSidebar }: Props) {
           <div className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/30 flex items-center justify-center glow-blue-sm">
             <Brain size={16} className="text-accent-light" />
           </div>
-          <span className="font-bold text-white tracking-tight text-lg">GBrain</span>
+          <span className="font-bold text-white tracking-tight text-lg">XandaCross</span>
         </div>
       </div>
 

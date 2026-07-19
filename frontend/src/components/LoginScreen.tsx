@@ -33,7 +33,7 @@ export default function LoginScreen({ onLogin, onLoginReplit }: Props) {
           <div className="w-16 h-16 rounded-2xl bg-accent/20 border border-accent/40 flex items-center justify-center glow-blue-sm mb-4">
             <Brain size={32} className="text-accent-light" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">GBrain</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight">XandaCross</h1>
           <p className="text-slate-400 mt-2 text-center text-sm leading-relaxed">
             Your personal knowledge brain — upload documents,<br />
             extract insights, ask anything.

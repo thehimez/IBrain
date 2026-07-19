@@ -86,7 +86,7 @@ export default function ChatWindow() {
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : 'Unknown error';
       updateMessage(conv.id, assistantId, {
-        content: `**Error connecting to GBrain:** ${errMsg}\n\nMake sure the GBrain API server is running on port 3001.`,
+        content: `**Error connecting to XandaCross:** ${errMsg}\n\nMake sure the XandaCross API server is running on port 3001.`,
         isStreaming: false,
       });
     } finally {
@@ -107,7 +107,7 @@ export default function ChatWindow() {
             <div className="w-16 h-16 rounded-2xl bg-accent/15 border border-accent/25 flex items-center justify-center mb-6 glow-blue">
               <Brain size={32} className="text-accent-light" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Welcome to GBrain</h1>
+            <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Welcome to XandaCross</h1>
             <p className="text-slate-400 text-base mb-10">Your Industrial Knowledge Intelligence Platform</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl">
