@@ -103,3 +103,6 @@ GBRAIN_EMBEDDING_DIMENSIONS = "1536"
 GBRAIN_EMBEDDING_MODEL = "openai:text-embedding-3-small"
 GBRAIN_EXPANSION_MODEL = "openai:gpt-4o-mini"
 GOOGLE_REDIRECT_URI = "https://5ef68902-5a2c-4143-a8ff-d604b2c82451-00-28l4sy50bthr6.sisko.replit.dev/api/auth/google/callback"
+
+[deployment]
+deploymentTarget = "cloudrun"
