@@ -5536,6 +5536,66 @@ export const MIGRATIONS: Migration[] = [
         ADD COLUMN IF NOT EXISTS content_raw TEXT;
     `,
   },
+  {
+    version: 125,
+    name: 'multi_provider_auth',
+    // Phase 1 of authentication migration: adds multi-provider identity columns
+    // to the users table and creates a DB-backed sessions table.
+    //
+    // All changes are additive — no existing columns, rows, or source_id values
+    // are modified. Existing Replit users are back-filled with provider='replit'.
+    //
+    // New columns on users:
+    //   provider          TEXT  — 'replit' | 'google' | 'github' | …
+    //   provider_user_id  TEXT  — the provider's stable user identifier
+    //   email             TEXT  — provided by Google and most OAuth providers
+    //
+    // New table: sessions
+    //   Stores opaque HttpOnly cookie session tokens for Google-authed users.
+    //   Replit users continue using proxy headers (no session row required).
+    idempotent: true,
+    sql: `
+      -- 1. Add provider identity columns (nullable, backward compatible)
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS provider          TEXT;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_user_id  TEXT;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS email             TEXT;
+
+      -- 2. Back-fill all existing Replit user rows
+      UPDATE users
+         SET provider         = 'replit',
+             provider_user_id = replit_user_id
+       WHERE provider IS NULL AND replit_user_id IS NOT NULL;
+
+      -- 3. Unique index on (provider, provider_user_id) for future account linking
+      CREATE UNIQUE INDEX IF NOT EXISTS users_provider_uid_idx
+        ON users (provider, provider_user_id)
+        WHERE provider IS NOT NULL AND provider_user_id IS NOT NULL;
+
+      -- 4. DB-backed sessions table for cookie-authenticated users (Google, etc.)
+      CREATE TABLE IF NOT EXISTS sessions (
+        id          TEXT        PRIMARY KEY,
+        user_id     TEXT        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        provider    TEXT        NOT NULL,
+        created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        expires_at  TIMESTAMPTZ NOT NULL,
+        ip          TEXT,
+        user_agent  TEXT
+      );
+
+      CREATE INDEX IF NOT EXISTS sessions_user_id_idx
+        ON sessions(user_id);
+
+      CREATE INDEX IF NOT EXISTS sessions_expires_at_idx
+        ON sessions(expires_at);
+    `,
+    verify: async (engine) => {
+      const rows = await engine.executeRaw<{ count: string }>(
+        `SELECT COUNT(*) AS count FROM information_schema.columns
+         WHERE table_name = 'users' AND column_name = 'provider' AND table_schema = 'public'`,
+      );
+      return Number(rows[0]?.count ?? 0) > 0;
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.length > 0

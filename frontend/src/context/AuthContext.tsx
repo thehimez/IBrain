@@ -2,7 +2,9 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 
 export interface AuthUser {
   id: string;
+  provider: string;
   name: string;
+  email?: string | null;
   avatarUrl?: string | null;
   sourceId: string;
 }
@@ -10,7 +12,9 @@ export interface AuthUser {
 interface AuthContextValue {
   user: AuthUser | null;
   isLoading: boolean;
-  login: () => void;
+  loginWithGoogle: () => void;
+  loginWithReplit: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -39,14 +43,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fetchMe();
   }, [fetchMe]);
 
-  const login = useCallback(() => {
+  /** Primary login: full-page redirect to Google OAuth. */
+  const loginWithGoogle = useCallback(() => {
+    window.location.href = '/api/auth/google';
+  }, []);
+
+  /** Legacy Replit login (popup, kept for backward compat during Phase 1). */
+  const loginWithReplit = useCallback(() => {
     const domain = window.location.host;
     const popup = window.open(
       `https://replit.com/auth_with_repl_site?domain=${domain}`,
       '_blank',
       'width=400,height=600,menubar=no,toolbar=no,location=no',
     );
-
     const handler = async (e: MessageEvent) => {
       if (e.data === 'authed') {
         window.removeEventListener('message', handler);
@@ -58,8 +67,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.addEventListener('message', handler);
   }, [fetchMe]);
 
+  const logout = useCallback(async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch { /* ignore network errors */ }
+    setUser(null);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login }}>
+    <AuthContext.Provider value={{ user, isLoading, loginWithGoogle, loginWithReplit, logout }}>
       {children}
     </AuthContext.Provider>
   );

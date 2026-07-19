@@ -25,6 +25,22 @@ import { mcpAuthRouter } from '@modelcontextprotocol/sdk/server/auth/router.js';
 import { requireBearerAuth } from '@modelcontextprotocol/sdk/server/auth/middleware/bearerAuth.js';
 import type { BrainEngine } from '../core/engine.ts';
 import { upsertUser, readReplitAuthHeaders, userSourceId } from '../core/users.ts';
+import { authService, upsertProviderUser } from '../core/auth/auth-service.ts';
+import {
+  createSession,
+  deleteSession,
+  sessionCookieOptions,
+  clearCookieOptions,
+  COOKIE_NAME,
+} from '../core/auth/session.ts';
+import {
+  buildGoogleAuthUrl,
+  exchangeGoogleCode,
+  fetchGoogleUserInfo,
+  generateOAuthState,
+  getGoogleRedirectUri,
+  STATE_COOKIE,
+} from '../core/auth/google-provider.ts';
 import { operations, OperationError } from '../core/operations.ts';
 import type { OperationContext, AuthInfo } from '../core/operations.ts';
 import { GBrainOAuthProvider, validateTokenEndpointAuthMethod } from '../core/oauth-provider.ts';
@@ -610,19 +626,114 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // Public API — no auth required (single-user MVP, access is same-host only)
   // ---------------------------------------------------------------------------
 
-  // GET /api/auth/me — resolve the authenticated Replit user (upsert on first visit)
+  // GET /api/auth/me — resolve the authenticated user (session cookie or Replit headers)
   app.get('/api/auth/me', async (req: Request, res: Response) => {
-    const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
-    if (!authInfo) {
-      res.status(401).json({ error: 'not_authenticated' });
-      return;
-    }
     try {
-      const user = await upsertUser(engine, authInfo);
-      res.json({ id: user.id, name: user.name, avatarUrl: user.avatarUrl, sourceId: user.sourceId });
+      const user = await authService.getCurrentUser(req, engine);
+      if (!user) {
+        res.status(401).json({ error: 'not_authenticated' });
+        return;
+      }
+      res.json({
+        id:       user.id,
+        provider: user.provider,
+        name:     user.name,
+        email:    user.email,
+        avatarUrl: user.avatar,
+        sourceId: user.sourceId,
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('GET /api/auth/me error:', msg);
+      res.status(500).json({ error: 'internal_error', detail: msg });
+    }
+  });
+
+  // GET /api/auth/google — start Google OAuth 2.0 authorization code flow
+  app.get('/api/auth/google', (req: Request, res: Response) => {
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+      res.status(503).send(
+        '<h3 style="font-family:sans-serif;padding:2rem">Google login is not configured.<br>' +
+        'Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Replit Secrets.</h3>',
+      );
+      return;
+    }
+    const state       = generateOAuthState();
+    const redirectUri = getGoogleRedirectUri(req as any);
+    const authUrl     = buildGoogleAuthUrl(state, redirectUri);
+    // Short-lived CSRF state cookie — 10 min, cleared after callback
+    res.cookie(STATE_COOKIE, state, {
+      httpOnly: true,
+      secure:   req.secure || String(req.headers['x-forwarded-proto'] ?? '') === 'https',
+      sameSite: 'lax',
+      maxAge:   10 * 60 * 1000,
+      path:     '/',
+    });
+    res.redirect(authUrl);
+  });
+
+  // GET /api/auth/google/callback — exchange code, upsert user, set session cookie
+  app.get('/api/auth/google/callback', async (req: Request, res: Response) => {
+    try {
+      const { code, state, error } = req.query as Record<string, string>;
+
+      if (error) {
+        console.warn('Google OAuth denied:', error);
+        res.redirect('/?auth_error=' + encodeURIComponent(error));
+        return;
+      }
+
+      // Verify CSRF state nonce
+      const storedState = (req.cookies as Record<string, string>)?.[STATE_COOKIE];
+      res.clearCookie(STATE_COOKIE, { path: '/' });
+      if (!storedState || storedState !== state) {
+        res.status(400).send('OAuth state mismatch — possible CSRF. Please try again.');
+        return;
+      }
+      if (!code) {
+        res.status(400).send('Missing authorization code.');
+        return;
+      }
+
+      const redirectUri     = getGoogleRedirectUri(req as any);
+      const { accessToken } = await exchangeGoogleCode(code, redirectUri);
+      const googleUser      = await fetchGoogleUserInfo(accessToken);
+
+      // Upsert user + ensure sources row
+      const authedUser = await upsertProviderUser(engine, {
+        provider:       'google',
+        providerUserId: googleUser.sub,
+        name:           googleUser.name,
+        email:          googleUser.email,
+        avatarUrl:      googleUser.picture,
+      });
+
+      // Create session + set HttpOnly rolling cookie
+      const token = await createSession(engine, authedUser.id, 'google', {
+        ip:        req.ip ?? String(req.headers['x-forwarded-for'] ?? ''),
+        userAgent: String(req.headers['user-agent'] ?? ''),
+      });
+      res.cookie(COOKIE_NAME, token, sessionCookieOptions(req));
+
+      res.redirect('/');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('GET /api/auth/google/callback error:', msg);
+      res.redirect('/?auth_error=login_failed');
+    }
+  });
+
+  // POST /api/auth/logout — delete session + clear cookie
+  app.post('/api/auth/logout', async (req: Request, res: Response) => {
+    try {
+      const token = (req.cookies as Record<string, string>)?.[COOKIE_NAME];
+      if (token) {
+        await deleteSession(engine, token);
+        res.clearCookie(COOKIE_NAME, clearCookieOptions(req));
+      }
+      res.json({ ok: true });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
       res.status(500).json({ error: 'internal_error', detail: msg });
     }
   });
@@ -647,12 +758,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // GET /api/graph — user-scoped knowledge graph (pages + entities + relationships)
   app.get('/api/graph', async (req: Request, res: Response) => {
     try {
-      const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
-      if (!authInfo) {
+      const user = await authService.getCurrentUser(req, engine);
+      if (!user) {
         res.status(401).json({ error: 'not_authenticated' });
         return;
       }
-      const user = await upsertUser(engine, authInfo);
       const sid = user.sourceId;
 
       const pages = await engine.executeRaw<{
@@ -758,14 +868,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
         return;
       }
       // Resolve user and scope the think call to their source (if authenticated)
-      const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
       let sourceId: string | undefined;
-      if (authInfo) {
-        try {
-          const user = await upsertUser(engine, authInfo);
-          sourceId = user.sourceId;
-        } catch { /* fall through — chat still works without auth scoping */ }
-      }
+      try {
+        const chatUser = await authService.getCurrentUser(req, engine);
+        if (chatUser) sourceId = chatUser.sourceId;
+      } catch { /* fall through — chat still works without auth scoping */ }
       const result = await dispatchToolCall(engine, 'think', { question: message.trim() }, { sourceId });
       if (result.isError) {
         res.status(500).json({ error: 'brain_error', detail: result.content[0]?.text });
@@ -2236,12 +2343,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   app.post('/api/upload', express.json({ limit: '5mb' }), async (req: Request, res: Response) => {
     try {
       // Resolve authenticated user — uploads require auth
-      const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
-      if (!authInfo) {
+      const uploader = await authService.getCurrentUser(req, engine);
+      if (!uploader) {
         res.status(401).json({ error: 'not_authenticated', message: 'Sign in to upload documents.' });
         return;
       }
-      const uploader = await upsertUser(engine, authInfo);
 
       const { filename, content, mimeType } = req.body as {
         filename?: string;
@@ -2347,13 +2453,13 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // ---------------------------------------------------------------------------
 
   // Helper: resolve auth or return 401.
-  const requireReplitAuth = async (req: Request, res: Response) => {
-    const authInfo = readReplitAuthHeaders(req.headers as Record<string, string | string[] | undefined>);
-    if (!authInfo) {
+  const requireAuth = async (req: Request, res: Response) => {
+    const user = await authService.getCurrentUser(req, engine);
+    if (!user) {
       res.status(401).json({ error: 'not_authenticated', message: 'Sign in to access files.' });
       return null;
     }
-    return upsertUser(engine, authInfo);
+    return user;
   };
 
   // Postgres.js returns BIGINT/SERIAL columns as BigInt in some configurations.
@@ -2364,7 +2470,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // GET /api/files/by-slug?slug=inbox/2026-07-18-1eb52a
   app.get('/api/files/by-slug', async (req: Request, res: Response) => {
     try {
-      const user = await requireReplitAuth(req, res);
+      const user = await requireAuth(req, res);
       if (!user) return;
       const slug = typeof req.query.slug === 'string' ? req.query.slug : null;
       if (!slug) {
@@ -2396,7 +2502,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // GET /api/files/:id — metadata + preview content
   app.get('/api/files/:id', async (req: Request, res: Response) => {
     try {
-      const user = await requireReplitAuth(req, res);
+      const user = await requireAuth(req, res);
       if (!user) return;
       const id = parseInt(req.params.id, 10);
       if (isNaN(id)) {
@@ -2431,7 +2537,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // GET /api/files/:id/download — stream original file
   app.get('/api/files/:id/download', async (req: Request, res: Response) => {
     try {
-      const user = await requireReplitAuth(req, res);
+      const user = await requireAuth(req, res);
       if (!user) return;
       const id = parseInt(req.params.id, 10);
       if (isNaN(id)) {

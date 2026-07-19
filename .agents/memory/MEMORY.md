@@ -2,3 +2,4 @@
 - [GBrain upload endpoint](gbrain-upload.md) — POST /api/upload added to serve-http.ts (no auth, text/markdown only, needs GBrain Worker for ingestion)
 - [GBrain multi-user migration](gbrain-multiuser.md) — Replit auth via X-Replit-User-Id headers; source_id is the isolation boundary, not owner_id columns
 - [GBrain file preservation & source preview](gbrain-file-preservation.md) — files table stores content_raw; new /api/files/* endpoints; SourceChips + DocumentModal frontend; BigInt serialization quirk
+- [GBrain auth layer](gbrain-auth-layer.md) — DB-backed cookie sessions + Google OAuth; migration v125; no third-party auth libraries

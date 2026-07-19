@@ -41,12 +41,14 @@ export async function upsertUser(
     name: string;
     avatar_url: string | null;
   }>(
-    `INSERT INTO users (id, replit_user_id, name, avatar_url, updated_at)
-     VALUES ($1, $2, $3, $4, NOW())
+    `INSERT INTO users (id, replit_user_id, provider, provider_user_id, name, avatar_url, updated_at)
+     VALUES ($1, $2, 'replit', $2, $3, $4, NOW())
      ON CONFLICT (replit_user_id) DO UPDATE
-       SET name       = EXCLUDED.name,
-           avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
-           updated_at = NOW()
+       SET name             = EXCLUDED.name,
+           avatar_url       = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
+           provider         = COALESCE(users.provider, 'replit'),
+           provider_user_id = COALESCE(users.provider_user_id, users.replit_user_id),
+           updated_at       = NOW()
      RETURNING id, replit_user_id, name, avatar_url`,
     [replit_user_id, replit_user_id, name, avatar_url ?? null],
   );

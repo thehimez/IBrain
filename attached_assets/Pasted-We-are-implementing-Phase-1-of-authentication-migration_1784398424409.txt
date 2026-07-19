@@ -1,0 +1,362 @@
+We are implementing Phase 1 of authentication migration.
+
+IMPORTANT
+
+This is a production migration.
+
+The current application is fully working.
+
+Do NOT rewrite the application.
+
+Do NOT redesign the architecture.
+
+Do NOT modify:
+
+- Upload pipeline
+- Ingestion worker
+- Knowledge Graph
+- Hybrid Search
+- Chat
+- Source isolation
+- Document storage
+- References
+- File preview
+- File download
+
+The ONLY objective is replacing the authentication provider.
+
+========================================================
+
+OBJECTIVE
+
+Implement Google Sign-In using Google OAuth.
+
+Google Sign-In will become the primary authentication method.
+
+The rest of the application must remain unchanged.
+
+Authentication is the ONLY layer that should change.
+
+========================================================
+
+AUTHENTICATION ARCHITECTURE
+
+Create a lightweight internal authentication layer.
+
+Do NOT introduce Better Auth.
+
+Do NOT introduce Auth.js.
+
+Do NOT introduce Passport.js.
+
+Implement our own small authentication service.
+
+Example structure
+
+src/core/auth/
+
+types.ts
+
+auth-service.ts
+
+google-provider.ts
+
+session.ts
+
+middleware.ts
+
+The rest of the application should only communicate with
+
+AuthService
+
+and never directly with Google.
+
+========================================================
+
+GOOGLE OAUTH
+
+Implement Google OAuth 2.0 Authorization Code Flow.
+
+Google Cloud Console will provide
+
+GOOGLE_CLIENT_ID
+
+GOOGLE_CLIENT_SECRET
+
+The callback should exchange the authorization code.
+
+Retrieve
+
+Google User ID (sub)
+
+Email
+
+Name
+
+Profile Picture
+
+Store these in the existing users table.
+
+========================================================
+
+DATABASE
+
+Reuse the existing users table.
+
+Do NOT create a new user system.
+
+If necessary add only:
+
+provider
+
+provider_user_id
+
+email
+
+All migrations must be additive.
+
+Existing users must remain valid.
+
+========================================================
+
+USER CREATION
+
+On first login
+
+Automatically create the user.
+
+Automatically create the user's source.
+
+Exactly like the current system.
+
+Current source isolation must remain untouched.
+
+========================================================
+
+SOURCE ID
+
+Keep the existing source_id architecture.
+
+Do NOT redesign it.
+
+Existing Replit users
+
+user:123456
+
+must continue working.
+
+Google users may use
+
+user:google:<google_sub>
+
+or another clean provider-aware format.
+
+Do NOT modify existing user source IDs.
+
+========================================================
+
+SESSIONS
+
+Implement secure HttpOnly cookie sessions.
+
+No JWT.
+
+Session cookies should contain only a random session identifier.
+
+Store sessions in the database.
+
+Cookie requirements
+
+HttpOnly
+
+Secure
+
+SameSite=Lax
+
+Rolling expiration
+
+Logout deletes the session.
+
+========================================================
+
+BACKEND
+
+Replace all direct authentication lookups with
+
+AuthService.getCurrentUser()
+
+The rest of the application must continue using
+
+user.sourceId
+
+without modification.
+
+No search code should change.
+
+No upload code should change.
+
+No graph code should change.
+
+========================================================
+
+FRONTEND
+
+Replace the current login page.
+
+Show
+
+Continue with Google
+
+with Google's branding guidelines.
+
+After login
+
+Redirect back into the application.
+
+The user should immediately see
+
+their own
+
+documents
+
+chat
+
+graph
+
+dashboard
+
+without any additional setup.
+
+========================================================
+
+GOOGLE CLOUD CONSOLE
+
+Prepare the application for
+
+OAuth Consent Screen
+
+OAuth Client ID
+
+OAuth Client Secret
+
+Authorized JavaScript Origins
+
+Authorized Redirect URIs
+
+Read these values from environment variables.
+
+Do NOT hardcode any credentials.
+
+========================================================
+
+IMPLEMENTATION REQUIREMENTS
+
+Preserve
+
+users
+
+sources
+
+pages
+
+chunks
+
+embeddings
+
+graph
+
+files
+
+citations
+
+All existing data must continue working.
+
+========================================================
+
+TESTING
+
+Create one existing Replit user.
+
+Create one new Google user.
+
+Verify
+
+Google login works.
+
+Session cookie works.
+
+User is automatically created.
+
+Source is automatically created.
+
+Upload works.
+
+Chat works.
+
+Knowledge Graph works.
+
+File preview works.
+
+File download works.
+
+Source isolation works.
+
+Logout works.
+
+Session expiration works.
+
+========================================================
+
+DEPLOYMENT
+
+Do not remove Replit authentication yet.
+
+Instead
+
+Google becomes the default login.
+
+Keep Replit authentication available behind a configuration flag.
+
+This allows rollback if required.
+
+========================================================
+
+DELIVERABLE
+
+Do not stop after coding.
+
+Run the application.
+
+Verify the entire authentication flow.
+
+Verify no regression in existing functionality.
+
+Document:
+
+- Google Cloud Console configuration
+- Required environment variables
+- Callback URL
+- Database migration
+- Session flow
+
+Take screenshots of
+
+1. Google login screen
+
+2. Google consent screen
+
+3. Successful login
+
+4. User automatically created
+
+5. Upload working
+
+6. Chat working
+
+7. Knowledge Graph working
+
+8. File preview working
+
+9. Logout working
+
+Only finish when every verification passes successfully.
