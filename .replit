@@ -25,6 +25,10 @@ args = "GBrain API"
 task = "workflow.run"
 args = "GBrain Worker"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "GBrain Mobile"
+
 [[workflows.workflow]]
 name = "Start application"
 author = "agent"
@@ -60,6 +64,17 @@ args = "bun run src/cli.ts jobs work --concurrency 2"
 [workflows.workflow.metadata]
 outputType = "console"
 
+[[workflows.workflow]]
+name = "GBrain Mobile"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd mobile && bun start"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[ports]]
 localPort = 3001
 externalPort = 3001
@@ -71,6 +86,14 @@ externalPort = 80
 [[ports]]
 localPort = 5001
 externalPort = 3002
+
+[[ports]]
+localPort = 8081
+externalPort = 8081
+
+[[ports]]
+localPort = 8082
+externalPort = 3000
 
 [userenv]
 
