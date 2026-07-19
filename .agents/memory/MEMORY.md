@@ -3,3 +3,4 @@
 - [GBrain multi-user migration](gbrain-multiuser.md) — Replit auth via X-Replit-User-Id headers; source_id is the isolation boundary, not owner_id columns
 - [GBrain file preservation & source preview](gbrain-file-preservation.md) — files table stores content_raw; new /api/files/* endpoints; SourceChips + DocumentModal frontend; BigInt serialization quirk
 - [GBrain auth layer](gbrain-auth-layer.md) — DB-backed cookie sessions + Google OAuth; migration v125; no third-party auth libraries
+- [GBrain mobile app](gbrain-mobile.md) — Expo SDK 52 + NativeWind v4; auth via expo-web-browser; iOS cookie sharing works, Android needs dev build
