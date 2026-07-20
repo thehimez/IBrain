@@ -1,17 +1,18 @@
 import React from 'react';
 import {
-  View, Text, TouchableOpacity, ActivityIndicator,
+  View, Text, TouchableOpacity, ActivityIndicator, ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
 import { Redirect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
 import { Colors } from '../../constants/colors';
 
-/** Orange orb with highlight — no puddle shadow, matches web simulator */
+/** Orange orb with specular highlight */
 function Orb() {
   return (
-    <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 32 }}>
+    <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28 }}>
       <View
         style={{
           width: 96,
@@ -25,7 +26,6 @@ function Orb() {
           elevation: 10,
         }}
       >
-        {/* Specular highlight */}
         <View
           style={{
             width: 34,
@@ -43,28 +43,22 @@ function Orb() {
   );
 }
 
-/** Google "G" badge */
-function GoogleBadge() {
+/** Proper multicolor Google "G" logo via SVG */
+function GoogleLogo({ size = 20 }: { size?: number }) {
   return (
-    <View
-      style={{
-        width: 22,
-        height: 22,
-        borderRadius: 11,
-        backgroundColor: '#4285F4',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Text style={{ color: '#fff', fontSize: 12, fontWeight: '700' }}>G</Text>
-    </View>
+    <Svg width={size} height={size} viewBox="0 0 48 48">
+      <Path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+      <Path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+      <Path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+      <Path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+    </Svg>
   );
 }
 
 const FEATURES: { icon: keyof typeof Ionicons.glyphMap; title: string; desc: string }[] = [
-  { icon: 'search-outline',   title: 'Hybrid Search',      desc: 'Vector + BM25 search across your knowledge' },
-  { icon: 'sparkles-outline', title: 'AI Synthesis',       desc: 'Answers with citations from your own docs'  },
-  { icon: 'shield-outline',   title: 'Private by Design',  desc: 'Your data is completely isolated and secure' },
+  { icon: 'search-outline',   title: 'Hybrid Search',     desc: 'Vector + BM25 search across your knowledge' },
+  { icon: 'sparkles-outline', title: 'AI Synthesis',      desc: 'Answers with citations from your own docs'  },
+  { icon: 'shield-outline',   title: 'Private by Design', desc: 'Your data is completely isolated and secure' },
 ];
 
 export default function LoginScreen() {
@@ -74,8 +68,11 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bg.primary }}>
-      <View style={{ flex: 1, paddingHorizontal: 28, paddingTop: 48, paddingBottom: 32 }}>
-
+      <ScrollView
+        contentContainerStyle={{ paddingHorizontal: 28, paddingTop: 48, paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Headline */}
         <Text
           style={{
@@ -120,7 +117,6 @@ export default function LoginScreen() {
                 paddingVertical: 13,
               }}
             >
-              {/* Icon box */}
               <View
                 style={{
                   width: 36,
@@ -136,8 +132,6 @@ export default function LoginScreen() {
               >
                 <Ionicons name={icon} size={16} color={Colors.accent.default} />
               </View>
-
-              {/* Text */}
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 14, fontWeight: '600', color: Colors.text.primary }}>
                   {title}
@@ -175,7 +169,7 @@ export default function LoginScreen() {
             <ActivityIndicator color="#fff" />
           ) : (
             <>
-              <GoogleBadge />
+              <GoogleLogo size={20} />
               <Text style={{ fontSize: 16, fontWeight: '600', color: '#ffffff', letterSpacing: 0.2 }}>
                 Continue with Google
               </Text>
@@ -183,10 +177,11 @@ export default function LoginScreen() {
           )}
         </TouchableOpacity>
 
-        <Text style={{ fontSize: 11, color: Colors.text.muted, textAlign: 'center', marginTop: 14 }}>
+        {/* Footer — always fully visible inside ScrollView */}
+        <Text style={{ fontSize: 11, color: Colors.text.muted, textAlign: 'center', marginTop: 16 }}>
           Your knowledge is private and only visible to you.
         </Text>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
