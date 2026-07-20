@@ -13,15 +13,26 @@ import { Colors } from '../../constants/colors';
 function Orb() {
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28 }}>
-      {/* Single soft glow — slightly larger than ball, offset down to match CSS shadow y:8 */}
+      {/* Orange glow behind sphere — simulates box-shadow: 0 8px 24px rgba(239,85,32,0.40) */}
       <View
         style={{
           position: 'absolute',
-          top: 10,
-          width: 108,
-          height: 108,
-          borderRadius: 54,
-          backgroundColor: 'rgba(239,85,32,0.09)',
+          top: 8,            // matches shadowOffset y:8
+          width: 112,
+          height: 112,
+          borderRadius: 56,
+          backgroundColor: 'rgba(239,85,32,0.18)',
+        }}
+      />
+      {/* Teal ground oval — matches web's bg-accent-light/20 blur-sm ellipse */}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: -6,
+          width: 64,
+          height: 18,
+          borderRadius: 32,
+          backgroundColor: 'rgba(73,126,126,0.22)',
         }}
       />
       {/* Main orange sphere */}
@@ -32,10 +43,10 @@ function Orb() {
           borderRadius: 48,
           backgroundColor: Colors.orange,
           shadowColor: Colors.orange,
-          shadowOffset: { width: 0, height: 6 },
+          shadowOffset: { width: 0, height: 8 },
           shadowOpacity: 0.40,
-          shadowRadius: 16,
-          elevation: 8,
+          shadowRadius: 24,
+          elevation: 6,
         }}
       >
         {/* Specular highlight */}
