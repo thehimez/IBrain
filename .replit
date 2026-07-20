@@ -73,8 +73,7 @@ outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd mobile && bun run web"
-waitForPort = 8081
+args = "cd mobile && REACT_NATIVE_PACKAGER_HOSTNAME=5c4c8529-498e-4fca-a15c-582b9dd75a87-00-11o34mhlk557i.pike.replit.dev expo start --port 8081 --lan"
 
 [[ports]]
 localPort = 3001
