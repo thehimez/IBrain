@@ -83,8 +83,6 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bg.primary }}>
-      <StatusBar barStyle="dark-content" backgroundColor={Colors.bg.primary} />
-
       <View style={{ flex: 1, paddingHorizontal: 32, paddingTop: 56, paddingBottom: 40 }}>
         {/* Headline */}
         <View style={{ flex: 1, justifyContent: 'flex-start' }}>
