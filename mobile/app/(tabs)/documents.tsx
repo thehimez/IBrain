@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
   Modal, ScrollView, Alert, ActivityIndicator,
@@ -8,6 +8,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import * as Haptics from 'expo-haptics';
 import { useDocuments, useUpload } from '../../hooks/useDocuments';
+import { documentsService } from '../../services/documents';
 import { Colors } from '../../constants/colors';
 import DocumentCard from '../../components/documents/DocumentCard';
 import UploadProgress from '../../components/documents/UploadProgress';
@@ -22,7 +23,22 @@ export default function DocumentsScreen() {
   const { files, isLoading, error, refetch } = useDocuments();
   const { queue, isUploading, addToQueue, removeFromQueue, clearQueue, uploadAll } = useUpload();
   const [previewFile, setPreviewFile] = useState<XandaCrossFile | null>(null);
+  const [previewContent, setPreviewContent] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
+
+  // Fetch full content whenever a file is selected for preview
+  useEffect(() => {
+    if (!previewFile) { setPreviewContent(null); return; }
+    let cancelled = false;
+    setPreviewLoading(true);
+    setPreviewContent(null);
+    documentsService.getContent(previewFile.id)
+      .then(full => { if (!cancelled) setPreviewContent(full.content ?? full.content_raw ?? null); })
+      .catch(() => { if (!cancelled) setPreviewContent(null); })
+      .finally(() => { if (!cancelled) setPreviewLoading(false); });
+    return () => { cancelled = true; };
+  }, [previewFile?.id]);
 
   const pickDocument = async () => {
     try {
@@ -256,9 +272,14 @@ export default function DocumentsScreen() {
               </TouchableOpacity>
             </View>
             <ScrollView contentContainerStyle={{ padding: 20 }}>
-              {previewFile.content_raw ? (
+              {previewLoading ? (
+                <View style={{ marginTop: 60, alignItems: 'center', gap: 12 }}>
+                  <ActivityIndicator size="large" color={Colors.accent.default} />
+                  <Text style={{ color: Colors.text.muted, fontSize: 13 }}>Loading content…</Text>
+                </View>
+              ) : previewContent ? (
                 <Text style={{ fontSize: 13, color: Colors.text.secondary, fontFamily: 'monospace', lineHeight: 21 }}>
-                  {previewFile.content_raw}
+                  {previewContent}
                 </Text>
               ) : (
                 <Text style={{ color: Colors.text.muted, fontSize: 14, textAlign: 'center', marginTop: 40 }}>
