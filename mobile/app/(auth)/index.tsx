@@ -13,27 +13,26 @@ import { Colors } from '../../constants/colors';
 function Orb() {
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28, height: 120 }}>
-      {/* Outer orange glow — wide, very soft */}
+      {/* Outer halo — wide warm-dark, very faint */}
       <View
         style={{
           position: 'absolute',
-          bottom: 0,
-          width: 110,
-          height: 26,
-          borderRadius: 55,
-          backgroundColor: 'rgba(239,85,32,0.13)',
-          transform: [{ scaleX: 1.1 }],
+          bottom: -2,
+          width: 100,
+          height: 20,
+          borderRadius: 50,
+          backgroundColor: 'rgba(90,35,10,0.10)',
         }}
       />
-      {/* Inner orange glow — tighter, slightly stronger */}
+      {/* Contact shadow — narrow, warm-dark, concentrated under the ball */}
       <View
         style={{
           position: 'absolute',
-          bottom: 3,
-          width: 72,
-          height: 16,
-          borderRadius: 36,
-          backgroundColor: 'rgba(239,85,32,0.22)',
+          bottom: 2,
+          width: 68,
+          height: 12,
+          borderRadius: 34,
+          backgroundColor: 'rgba(80,28,8,0.20)',
         }}
       />
       {/* Main orange sphere */}
