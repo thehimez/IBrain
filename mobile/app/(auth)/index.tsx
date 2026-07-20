@@ -9,23 +9,52 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
 import { Colors } from '../../constants/colors';
 
-/** Orange orb with specular highlight */
+/** Orange orb with specular highlight + explicit drop shadow (works on Android) */
 function Orb() {
   return (
-    <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28 }}>
+    <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28, height: 120 }}>
+      {/* Drop shadow ellipse — visible on both Android and iOS */}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 2,
+          width: 80,
+          height: 22,
+          borderRadius: 40,
+          backgroundColor: 'rgba(0,0,0,0.18)',
+          // blur approximated by scaling + low opacity layers
+          transform: [{ scaleX: 1.15 }],
+        }}
+      />
+      {/* Softer outer glow ring */}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: -2,
+          width: 100,
+          height: 28,
+          borderRadius: 50,
+          backgroundColor: 'rgba(0,0,0,0.08)',
+          transform: [{ scaleX: 1.2 }],
+        }}
+      />
+      {/* Main orange sphere */}
       <View
         style={{
           width: 96,
           height: 96,
           borderRadius: 48,
           backgroundColor: Colors.orange,
-          shadowColor: Colors.orange,
+          // iOS shadow
+          shadowColor: '#000',
           shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.40,
-          shadowRadius: 18,
+          shadowOpacity: 0.22,
+          shadowRadius: 14,
+          // Android elevation
           elevation: 10,
         }}
       >
+        {/* Specular highlight */}
         <View
           style={{
             width: 34,
