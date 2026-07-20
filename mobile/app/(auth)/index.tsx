@@ -13,29 +13,27 @@ import { Colors } from '../../constants/colors';
 function Orb() {
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28, height: 120 }}>
-      {/* Drop shadow ellipse — visible on both Android and iOS */}
+      {/* Outer orange glow — wide, very soft */}
       <View
         style={{
           position: 'absolute',
-          bottom: 2,
-          width: 80,
-          height: 22,
-          borderRadius: 40,
-          backgroundColor: 'rgba(0,0,0,0.18)',
-          // blur approximated by scaling + low opacity layers
-          transform: [{ scaleX: 1.15 }],
+          bottom: 0,
+          width: 110,
+          height: 26,
+          borderRadius: 55,
+          backgroundColor: 'rgba(239,85,32,0.13)',
+          transform: [{ scaleX: 1.1 }],
         }}
       />
-      {/* Softer outer glow ring */}
+      {/* Inner orange glow — tighter, slightly stronger */}
       <View
         style={{
           position: 'absolute',
-          bottom: -2,
-          width: 100,
-          height: 28,
-          borderRadius: 50,
-          backgroundColor: 'rgba(0,0,0,0.08)',
-          transform: [{ scaleX: 1.2 }],
+          bottom: 3,
+          width: 72,
+          height: 16,
+          borderRadius: 36,
+          backgroundColor: 'rgba(239,85,32,0.22)',
         }}
       />
       {/* Main orange sphere */}
