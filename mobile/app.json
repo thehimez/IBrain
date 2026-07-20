@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "XandaCross",
+    "slug": "xandacross-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/xandacross-logo.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "xandacross",
+    "splash": {
+      "image": "./assets/xandacross-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0f172a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.xandacross.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/xandacross-logo.png",
+        "backgroundColor": "#0f172a"
+      },
+      "package": "com.xandacross.mobile"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/xandacross-logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0f172a"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

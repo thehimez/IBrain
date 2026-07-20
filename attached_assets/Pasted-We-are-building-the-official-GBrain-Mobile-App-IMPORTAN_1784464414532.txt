@@ -1,0 +1,445 @@
+We are building the official GBrain Mobile App.
+
+IMPORTANT
+
+The backend is COMPLETE and PRODUCTION READY.
+
+The web application is COMPLETE and PRODUCTION READY.
+
+The mobile app is currently 0% complete.
+
+DO NOT modify the backend.
+
+DO NOT modify the web application.
+
+The mobile app must consume the existing backend exactly as it exists today.
+
+==========================================================
+OBJECTIVE
+==========================================================
+
+Build the entire React Native Expo mobile application in one implementation.
+
+The goal is to make the mobile app feature-equivalent to the web application.
+
+The mobile app should become the official native client.
+
+==========================================================
+TECH STACK
+==========================================================
+
+React Native
+
+Expo (latest stable)
+
+Expo Router
+
+TypeScript
+
+NativeWind
+
+React Navigation
+
+React Query
+
+React Native SVG
+
+Expo SecureStore
+
+Expo Document Picker
+
+Expo Image Picker
+
+React Native Reanimated
+
+React Native Gesture Handler
+
+==========================================================
+PROJECT STRUCTURE
+==========================================================
+
+Create
+
+mobile/
+
+inside the repository.
+
+Suggested structure
+
+mobile/
+
+app/
+
+components/
+
+hooks/
+
+services/
+
+types/
+
+constants/
+
+theme/
+
+assets/
+
+utils/
+
+==========================================================
+DO NOT DUPLICATE LOGIC
+==========================================================
+
+Reuse the existing backend.
+
+Reuse existing APIs.
+
+Reuse existing authentication.
+
+Reuse existing models.
+
+Reuse existing TypeScript interfaces whenever possible.
+
+Never duplicate backend logic.
+
+==========================================================
+IMPLEMENT EVERYTHING
+==========================================================
+
+PHASE 1
+
+Create the complete Expo project.
+
+Configure
+
+package.json
+
+app.json
+
+babel.config.js
+
+metro.config.js
+
+tsconfig.json
+
+tailwind.config.js
+
+NativeWind
+
+Expo Router
+
+Navigation
+
+Theme
+
+API client
+
+Environment configuration
+
+Authentication infrastructure
+
+==========================================================
+
+PHASE 2
+
+Implement authentication.
+
+Support
+
+Google Login
+
+Replit Login
+
+Reuse the existing backend authentication.
+
+Persist sessions using Expo SecureStore.
+
+Automatically restore sessions on app launch.
+
+==========================================================
+
+PHASE 3
+
+Implement Chat.
+
+Reuse the existing chat APIs.
+
+Support
+
+Streaming responses
+
+Markdown rendering
+
+Code blocks
+
+Source chips
+
+Typing indicator
+
+Loading states
+
+Auto scrolling
+
+Conversation history
+
+Create new conversation
+
+Delete conversation
+
+==========================================================
+
+PHASE 4
+
+Implement Documents.
+
+Reuse existing APIs.
+
+Support
+
+Document list
+
+Upload
+
+Delete
+
+Preview
+
+Download
+
+Search
+
+Filtering
+
+Upload progress
+
+PDF
+
+TXT
+
+Markdown
+
+Images
+
+Use Expo Document Picker.
+
+==========================================================
+
+PHASE 5
+
+Implement Knowledge Graph.
+
+Reuse existing graph APIs.
+
+Create a mobile-friendly graph.
+
+Support
+
+Zoom
+
+Pan
+
+Node selection
+
+Relationship inspection
+
+Entity details
+
+==========================================================
+
+Implement Profile.
+
+Display
+
+Avatar
+
+Name
+
+Email
+
+Provider
+
+Logout
+
+==========================================================
+
+PHASE 6
+
+Production polish.
+
+Implement
+
+Dark mode
+
+Animations
+
+Loading skeletons
+
+Error states
+
+Pull-to-refresh
+
+Empty states
+
+Responsive layouts
+
+Tablet support
+
+Performance optimization
+
+Memory optimization
+
+Network retry handling
+
+Haptic feedback where supported
+
+==========================================================
+VERY IMPORTANT
+==========================================================
+
+DO NOT wait until the end to verify everything.
+
+After completing EACH major phase:
+
+1.
+
+Run the project.
+
+2.
+
+Fix compile errors.
+
+3.
+
+Verify navigation works.
+
+4.
+
+Verify the app still launches.
+
+5.
+
+Verify existing functionality still works.
+
+Only after verification continue to the next phase.
+
+==========================================================
+QUALITY REQUIREMENTS
+==========================================================
+
+Write production-quality code.
+
+No placeholder implementations.
+
+No TODO comments.
+
+No fake APIs.
+
+No mocked responses.
+
+No duplicated code.
+
+Use reusable components.
+
+Use feature-based architecture.
+
+Strong TypeScript typing.
+
+Proper error handling.
+
+Loading states everywhere.
+
+Reusable hooks.
+
+Reusable services.
+
+==========================================================
+FINAL VERIFICATION
+==========================================================
+
+When everything is complete verify
+
+✓ Expo project starts successfully
+
+✓ Opens inside Expo Go
+
+✓ Android works
+
+✓ iOS works
+
+✓ Google Login works
+
+✓ Replit Login works
+
+✓ Session persistence works
+
+✓ Chat works
+
+✓ Streaming works
+
+✓ Markdown renders correctly
+
+✓ Source chips work
+
+✓ Conversation history works
+
+✓ Upload works
+
+✓ Document list works
+
+✓ Preview works
+
+✓ Download works
+
+✓ Knowledge Graph works
+
+✓ Profile works
+
+✓ Logout works
+
+✓ API communication works
+
+✓ Dark mode works
+
+✓ Animations work
+
+==========================================================
+FINAL REPORT
+==========================================================
+
+When finished provide:
+
+1.
+
+Files created
+
+2.
+
+Files modified
+
+3.
+
+Dependencies installed
+
+4.
+
+Architecture overview
+
+5.
+
+Screens implemented
+
+6.
+
+Features completed
+
+7.
+
+Any remaining issues
+
+8.
+
+Estimated completion percentage
+
+The target completion should be as close to 100% as possible.
+
+The mobile application should be production-ready and become the official native client for GBrain.

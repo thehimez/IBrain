@@ -1,0 +1,237 @@
+You are now acting as a Senior Staff Software Engineer performing a complete project audit.
+
+DO NOT immediately start coding.
+
+Your first responsibility is to inspect the entire project and produce a detailed implementation report.
+
+==========================
+STEP 1 — PROJECT AUDIT
+==========================
+
+Analyze the complete codebase.
+
+Determine exactly what is already implemented and what is incomplete.
+
+Inspect:
+
+- frontend
+- backend
+- routes
+- APIs
+- database
+- chat flow
+- ingestion pipeline
+- OCR
+- RAG
+- knowledge graph
+- embeddings
+- search
+- UI
+- services
+- configuration
+- environment variables
+
+Do not assume anything.
+
+Read the code before making conclusions.
+
+==========================
+STEP 2 — FEATURE CHECKLIST
+==========================
+
+Create a checklist using this format.
+
+✅ Fully implemented
+
+🟡 Partially implemented
+
+❌ Missing
+
+Check every item.
+
+### Frontend
+
+- Chat UI
+- Conversation history
+- Sidebar
+- New Chat
+- Rename chat
+- Delete chat
+- Markdown rendering
+- Streaming responses
+- Copy message
+- Dark mode
+- Responsive layout
+- Upload button
+- Drag and drop upload
+- Document explorer
+- Dashboard
+- Knowledge Graph page
+- Settings page
+
+### Backend
+
+- Chat endpoint
+- Search endpoint
+- Upload endpoint
+- OCR pipeline
+- Embeddings
+- Hybrid RAG
+- Knowledge Graph
+- Entity extraction
+- Gap analysis
+- Citation support
+- Conversation storage
+- Continuous sync
+
+### AI
+
+- OpenAI integration
+- Anthropic integration
+- API key detection
+- Streaming LLM
+- Search
+- Synthesis
+
+### Database
+
+- Documents
+- Sources
+- Conversations
+- Messages
+- Graph
+- Embeddings
+
+==========================
+STEP 3 — VERIFY CHAT
+==========================
+
+Investigate why typing
+
+"hi"
+
+returns
+
+"No LLM available"
+
+Determine:
+
+- Is the backend failing?
+- Is the API key missing?
+- Is the frontend calling the wrong endpoint?
+- Is synthesis disabled?
+- Is search working?
+- Is streaming broken?
+
+Explain the exact reason.
+
+==========================
+STEP 4 — OPENAI
+==========================
+
+I already have an OpenAI API key.
+
+Determine exactly where it must be configured.
+
+Do NOT hardcode it.
+
+Use Replit Secrets / environment variables.
+
+Verify that once the key is added:
+
+- search works
+- synthesis works
+- streaming works
+- citations work
+
+==========================
+STEP 5 — UPLOAD FEATURE
+==========================
+
+Determine whether document upload already exists.
+
+If yes:
+
+Explain why it is not visible.
+
+If partially implemented:
+
+Explain what is missing.
+
+If missing:
+
+Specify exactly what needs to be built.
+
+Supported files should include:
+
+PDF
+
+TXT
+
+Markdown
+
+PNG
+
+JPG
+
+WEBP
+
+==========================
+STEP 6 — KNOWLEDGE GRAPH
+==========================
+
+Determine whether the Knowledge Graph already exists.
+
+If yes:
+
+Explain how to expose it in the UI.
+
+If not:
+
+Explain what remains.
+
+==========================
+STEP 7 — PRIORITY REPORT
+==========================
+
+Do NOT start coding.
+
+Instead create a report.
+
+Priority 1 (Critical)
+
+Priority 2
+
+Priority 3
+
+Priority 4
+
+For each item explain:
+
+- Why it matters
+- Estimated effort
+- Dependencies
+
+==========================
+STEP 8 — BEFORE WRITING CODE
+==========================
+
+Wait for my approval.
+
+Do not modify any files.
+
+Do not refactor anything.
+
+Do not install packages.
+
+Do not change the database.
+
+Only audit the project and tell me exactly:
+
+1. What is completed.
+2. What is partially completed.
+3. What is broken.
+4. What should be built next.
+5. Why the AI isn't replying.
+6. Why upload isn't available.
+7. What the fastest path is to a fully working demo.

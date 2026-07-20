@@ -1,0 +1,284 @@
+You are a senior full-stack software engineer working on GBrain.
+
+IMPORTANT:
+Do NOT build authentication, signup, login, OAuth, or multi-user support.
+This is intentionally a single-user MVP that will later evolve into a multi-user system.
+
+The goal is to create a clean architecture that can be extended later without major refactoring.
+
+==========================
+OBJECTIVE
+==========================
+
+Build the first version of the GBrain frontend.
+
+The application should feel like ChatGPT but branded for GBrain.
+
+Only a single default user exists.
+
+Do not ask who the user is.
+
+Do not implement any authentication.
+
+Internally assume there is always one current session called "Demo User".
+
+==========================
+REQUIREMENTS
+==========================
+
+Create a professional responsive interface.
+
+Layout:
+
+---------------------------------
+Top Navbar
+
+GBrain Logo
+
+Current Brain:
+Industrial Knowledge Brain
+
+Status:
+Connected
+
+---------------------------------
+
+Left Sidebar
+
+• New Chat
+• Conversation History
+• Documents (placeholder)
+• Knowledge Graph (placeholder)
+• Dashboard (placeholder)
+• Settings (placeholder)
+
+The sidebar should be collapsible.
+
+---------------------------------
+
+Main Area
+
+Display a welcome message:
+
+"Welcome to GBrain"
+
+Below it:
+
+"Your Industrial Knowledge Intelligence Platform"
+
+Then a ChatGPT-style chat interface.
+
+Requirements:
+
+• Beautiful chat bubbles
+• Streaming response animation (fake typing is acceptable)
+• Auto scroll
+• Markdown rendering
+• Code block support
+• Copy button
+• Timestamp
+• Loading indicator
+
+Input box should support:
+
+• multiline typing
+• Enter to send
+• Shift+Enter for newline
+
+Send button.
+
+==========================
+BACKEND
+==========================
+
+Connect to the existing GBrain API.
+
+DO NOT rewrite the backend.
+
+Create a clean API service layer.
+
+Example:
+
+services/
+
+api.ts
+
+brain.ts
+
+chat.ts
+
+Do not mix API logic with UI.
+
+==========================
+STATE MANAGEMENT
+==========================
+
+Internally create a Context object.
+
+Example:
+
+CurrentContext
+
+currentUser:
+Demo User
+
+currentBrain:
+Industrial Knowledge Brain
+
+currentConversation
+
+Even though authentication doesn't exist,
+all components must access data through this context.
+
+Never hardcode values directly inside components.
+
+This architecture should make future multi-user support easy.
+
+==========================
+CHAT HISTORY
+==========================
+
+Store conversations.
+
+Each conversation has
+
+id
+
+title
+
+createdAt
+
+messages
+
+Allow
+
+Rename
+
+Delete
+
+New Chat
+
+Switch conversations
+
+==========================
+UI
+==========================
+
+Modern enterprise UI.
+
+Rounded cards.
+
+Soft shadows.
+
+Excellent spacing.
+
+Dark mode.
+
+Professional industrial feel.
+
+Do NOT copy ChatGPT exactly.
+
+Use a unique design.
+
+==========================
+CODE QUALITY
+==========================
+
+Use reusable components.
+
+Example
+
+/components
+
+ChatWindow
+
+ChatBubble
+
+Sidebar
+
+Navbar
+
+MessageInput
+
+ConversationItem
+
+LoadingIndicator
+
+MarkdownRenderer
+
+Keep components small.
+
+Clean folder structure.
+
+==========================
+FUTURE READY
+==========================
+
+Even though this is single-user,
+
+every request should pass through
+
+CurrentContext
+
+instead of hardcoded values.
+
+Example
+
+CurrentContext.getCurrentBrain()
+
+instead of
+
+IndustrialKnowledgeBrain
+
+This will allow future migration to multi-user without changing the UI.
+
+==========================
+DO NOT IMPLEMENT
+==========================
+
+No Login
+
+No Signup
+
+No OAuth
+
+No JWT
+
+No RBAC
+
+No Permissions
+
+No Organizations
+
+No Admin Panel
+
+No User Management
+
+==========================
+DELIVERABLE
+==========================
+
+When implementation is complete:
+
+1. Run the application.
+2. Verify there are no build errors.
+3. Verify the chat interface loads successfully.
+4. Verify conversation history works.
+5. Verify responsive layout.
+6. Verify dark mode.
+7. Verify the sidebar functions correctly.
+8. Verify the input box sends messages correctly.
+9. Verify the backend connection works.
+
+Finally,
+
+take high-quality screenshots of:
+
+• Full application
+• Sidebar
+• Chat conversation
+• Mobile responsive layout
+
+Ensure everything is fully working before taking screenshots.
+
+Do not stop until all checks pass successfully.

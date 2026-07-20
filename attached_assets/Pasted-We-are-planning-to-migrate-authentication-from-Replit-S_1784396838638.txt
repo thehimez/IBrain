@@ -1,0 +1,329 @@
+We are planning to migrate authentication from Replit Sign-In to Google Sign-In.
+
+IMPORTANT
+
+Do NOT change any code.
+
+Do NOT remove Replit authentication.
+
+Do NOT implement Google Sign-In yet.
+
+This is a pure architecture investigation.
+
+====================================================
+
+Current Goal
+
+We want to support Google OAuth as the primary authentication provider.
+
+The migration must NOT break the existing application.
+
+The current system is working perfectly.
+
+We will only proceed if the architecture is clean.
+
+====================================================
+
+Please investigate the complete authentication flow.
+
+Trace the entire login lifecycle.
+
+Show:
+
+Visitor
+
+↓
+
+Login
+
+↓
+
+Authentication
+
+↓
+
+User creation
+
+↓
+
+Session
+
+↓
+
+API authentication
+
+↓
+
+Database lookup
+
+↓
+
+Source creation
+
+↓
+
+Chat
+
+↓
+
+Upload
+
+↓
+
+Knowledge Graph
+
+↓
+
+Logout
+
+====================================================
+
+Specifically answer these questions.
+
+1.
+
+Where is Replit authentication currently implemented?
+
+List every backend file.
+
+List every frontend file.
+
+2.
+
+How are authenticated users identified?
+
+Headers?
+
+JWT?
+
+Session cookie?
+
+OAuth token?
+
+3.
+
+How is
+
+user_id
+
+created?
+
+4.
+
+How is
+
+source_id
+
+created?
+
+5.
+
+Which APIs depend on Replit authentication?
+
+6.
+
+Can authentication providers be abstracted?
+
+For example
+
+AuthProvider
+
+↓
+
+Google
+
+Replit
+
+GitHub
+
+Apple
+
+without rewriting the application.
+
+7.
+
+Which parts of the code are tightly coupled to Replit?
+
+List every dependency.
+
+====================================================
+
+Google Sign-In Design
+
+Without implementing anything,
+
+design the cleanest architecture.
+
+Desired flow
+
+Visitor
+
+↓
+
+Continue with Google
+
+↓
+
+Google OAuth
+
+↓
+
+Backend callback
+
+↓
+
+User table
+
+↓
+
+Session
+
+↓
+
+Existing source_id
+
+↓
+
+Application
+
+The existing user isolation
+
+source_id
+
+must continue to work exactly the same.
+
+====================================================
+
+Database
+
+Investigate whether the existing users table can simply be extended.
+
+Example
+
+id
+
+provider
+
+provider_user_id
+
+email
+
+name
+
+avatar_url
+
+created_at
+
+updated_at
+
+Where
+
+provider
+
+could be
+
+google
+
+replit
+
+github
+
+apple
+
+without changing the rest of the system.
+
+====================================================
+
+Session Design
+
+Recommend the best approach
+
+Secure HTTP-only cookies
+
+or
+
+JWT
+
+Explain why.
+
+The solution must support
+
+Web
+
+Android
+
+iOS
+
+Future desktop app
+
+====================================================
+
+Migration Strategy
+
+Design a zero-risk migration.
+
+Stage 1
+
+Current Replit login continues working.
+
+Google login added.
+
+Both providers work.
+
+Stage 2
+
+Existing users continue using Replit.
+
+New users can use Google.
+
+Stage 3
+
+Google becomes default.
+
+Stage 4
+
+Replit can optionally be removed later.
+
+No existing users should lose access.
+
+====================================================
+
+Google Cloud Console
+
+List exactly what will be required.
+
+OAuth Consent Screen
+
+OAuth Client ID
+
+Authorized Redirect URI
+
+Authorized JavaScript Origins
+
+Required scopes
+
+Required environment variables
+
+====================================================
+
+Deliverable
+
+Do NOT write code.
+
+Do NOT modify files.
+
+Produce a technical migration plan.
+
+Include
+
+architecture diagram
+
+affected files
+
+estimated complexity
+
+migration risks
+
+recommended implementation order.
+
+The migration should preserve the current multi-user architecture and source_id isolation exactly as it works today.

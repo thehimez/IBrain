@@ -1,0 +1,352 @@
+We are now implementing the next major feature of GBrain.
+
+IMPORTANT
+
+Do NOT redesign the architecture.
+
+Reuse the existing GBrain architecture wherever possible.
+
+From the investigation we discovered:
+
+- pages stores the processed knowledge.
+- files table already exists.
+- citations currently reference page.slug.
+- original uploaded files are not permanently preserved.
+
+We will implement this in two phases together.
+
+====================================================
+PHASE 1
+Preserve Original Uploaded Documents
+====================================================
+
+OBJECTIVE
+
+Whenever a user uploads a document,
+
+the ORIGINAL uploaded file should also be preserved.
+
+Do NOT duplicate the content inside pages.
+
+Reuse the existing files table.
+
+Desired architecture
+
+Upload
+
+↓
+
+Store original document
+
+↓
+
+files table
+
+↓
+
+Import pipeline
+
+↓
+
+pages
+
+↓
+
+chunks
+
+↓
+
+embeddings
+
+↓
+
+knowledge graph
+
+The pages row should be linked to the stored file.
+
+If the files table already supports page_id,
+reuse it.
+
+If a relation is missing,
+add only the minimum schema changes necessary.
+
+The upload pipeline should continue to work exactly as before.
+
+====================================================
+
+SUPPORTED TYPES (CURRENTLY)
+
+.text
+
+.markdown
+
+.html
+
+.json
+
+Keep current functionality unchanged.
+
+Future support for PDF/DOCX/images will use the same architecture.
+
+====================================================
+
+Store metadata
+
+filename
+
+mime type
+
+size
+
+content hash
+
+upload timestamp
+
+user source_id
+
+page_id
+
+storage path (or byte storage depending on existing architecture)
+
+====================================================
+
+AFTER IMPLEMENTATION
+
+Verify
+
+User uploads Restaurant.txt
+
+The original file exists.
+
+The page references the stored file.
+
+The knowledge extraction still works.
+
+Chat still answers correctly.
+
+====================================================
+PHASE 2
+Source References Like ChatGPT
+====================================================
+
+The current answer looks like
+
+Owner: Amit Verma
+
+[inbox/2026-07-18-1eb52a]
+
+This is an internal identifier.
+
+Users should never see internal slugs.
+
+Instead create a modern Source UI similar to ChatGPT.
+
+====================================================
+
+Below every AI answer render
+
+Sources
+
+📄 Restaurant.txt
+
+📄 Employee Handbook.txt
+
+📄 Kitchen SOP.md
+
+Each source appears as a rounded clickable chip.
+
+Display
+
+file icon
+
+filename
+
+(optional file type badge)
+
+Do NOT display internal slug IDs.
+
+====================================================
+
+Clicking a source chip opens a modal.
+
+The modal should contain
+
+------------------------------------------------
+
+Restaurant.txt
+
+Uploaded:
+18 Jul 2026
+
+Size:
+1.2 KB
+
+Type:
+text/plain
+
+------------------------------------------------
+
+Preview
+
+(original uploaded content)
+
+------------------------------------------------
+
+Buttons
+
+Download
+
+Close
+
+------------------------------------------------
+
+====================================================
+
+Preview behaviour
+
+text/plain
+
+render formatted text
+
+text/markdown
+
+render markdown
+
+text/html
+
+sandboxed HTML preview
+
+application/json
+
+syntax highlighted
+
+Future
+
+PDF
+
+embedded PDF viewer
+
+Images
+
+image viewer
+
+DOCX
+
+download only until preview is implemented
+
+====================================================
+
+Backend
+
+Create REST endpoints
+
+GET /api/files/:id
+
+returns
+
+filename
+
+mime
+
+size
+
+uploadedAt
+
+preview content (if text)
+
+GET /api/files/:id/download
+
+downloads the original file
+
+The endpoints must verify
+
+authenticated user
+
+correct source_id
+
+Users must NEVER access another user's files.
+
+====================================================
+
+Frontend
+
+Replace internal citation text
+
+[inbox/2026-07-18-xxxxxx]
+
+with Source chips.
+
+The citation slug should still exist internally for mapping,
+but should never be displayed to users.
+
+Clicking a chip opens the preview modal.
+
+====================================================
+
+SECURITY
+
+Every request must verify
+
+authenticated user
+
+source_id
+
+page ownership
+
+Never expose another user's uploaded document.
+
+====================================================
+
+VERIFICATION
+
+Create two users.
+
+User A uploads Restaurant.txt
+
+User B uploads Pump.txt
+
+Verify
+
+Restaurant user cannot access Pump document.
+
+Pump user cannot access Restaurant document.
+
+Both AI answers display source chips.
+
+Clicking Restaurant.txt opens Restaurant preview.
+
+Clicking Pump.txt opens Pump preview.
+
+Download works.
+
+====================================================
+
+DELIVERABLE
+
+Do not stop after writing code.
+
+Run the application.
+
+Test upload.
+
+Test chat.
+
+Test preview.
+
+Test download.
+
+Test user isolation.
+
+Take screenshots showing
+
+1. Upload success
+
+2. AI answer with Source chips
+
+3. Source preview modal
+
+4. Download working
+
+5. User isolation working
+
+Only finish when every test passes.
