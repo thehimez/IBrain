@@ -12,36 +12,36 @@
   }
 
   body {
-    background-color: #080e1a;
-    color: #e2e8f0;
+    background-color: #f8f7f5;
+    color: #1e1e1e;
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #1c2a50; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #243360; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 }
 
 @layer utilities {
   .bg-grid {
     background-image:
-      linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
+      linear-gradient(rgba(73, 126, 126, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(73, 126, 126, 0.04) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
   .glow-blue {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 20px rgba(73, 126, 126, 0.12);
   }
 
   .glow-blue-sm {
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 8px rgba(73, 126, 126, 0.15);
   }
 
   .border-glow {
-    border-color: rgba(59, 130, 246, 0.3);
+    border-color: rgba(73, 126, 126, 0.3);
   }
 }
 
@@ -52,7 +52,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #60a5fa;
+  background: #497e7e;
 }
 .typing-dot:nth-child(1) { animation-delay: 0s; }
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
@@ -67,7 +67,7 @@
 .streaming-cursor::after {
   content: '▋';
   animation: blink 1s step-end infinite;
-  color: #60a5fa;
+  color: #497e7e;
   margin-left: 2px;
 }
 

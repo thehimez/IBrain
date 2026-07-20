@@ -1,4 +1,4 @@
-import { Sparkles, Shield, Search } from 'lucide-react';
+import { Search, Sparkles, Shield } from 'lucide-react';
 
 interface Props {
   onLogin: () => void;
@@ -6,12 +6,11 @@ interface Props {
 }
 
 const features = [
-  { icon: Search,   title: 'Hybrid Search',   desc: 'Vector + BM25 search across your knowledge' },
-  { icon: Sparkles, title: 'AI Synthesis',     desc: 'Answers with citations from your own docs'  },
+  { icon: Search,   title: 'Hybrid Search',    desc: 'Vector + BM25 search across your knowledge' },
+  { icon: Sparkles, title: 'AI Synthesis',      desc: 'Answers with citations from your own docs'  },
   { icon: Shield,   title: 'Private by Design', desc: 'Your data is completely isolated and secure' },
 ];
 
-/** Google SVG logo — per Google's branding guidelines. */
 function GoogleLogo() {
   return (
     <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -24,62 +23,87 @@ function GoogleLogo() {
   );
 }
 
+/** Minimal orange orb — matches mobile design */
+function Orb() {
+  return (
+    <div className="relative flex items-center justify-center w-20 h-20 mx-auto mb-6">
+      {/* Teal ground shadow */}
+      <div className="absolute bottom-0 w-16 h-5 rounded-full bg-accent-light/20 blur-sm" />
+      {/* Orange sphere */}
+      <div
+        className="w-16 h-16 rounded-full bg-accent relative"
+        style={{ boxShadow: '0 8px 24px rgba(239,85,32,0.40)' }}
+      >
+        {/* Specular highlight */}
+        <div className="absolute top-3 left-4 w-6 h-4 rounded-full bg-white/30 -rotate-12" />
+      </div>
+    </div>
+  );
+}
+
 export default function LoginScreen({ onLogin, onLoginReplit }: Props) {
   return (
-    <div className="min-h-screen bg-navy-900 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-navy-950 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-10">
-          <img
-            src="/assets/xandacross-logo.png"
-            alt="XandaCross logo"
-            className="w-24 h-24 rounded-2xl object-cover glow-blue-sm mb-4"
-          />
-          <h1 className="text-3xl font-bold text-white tracking-tight">XandaCross</h1>
-          <p className="text-slate-400 mt-2 text-center text-sm leading-relaxed">
-            Your personal knowledge brain — upload documents,<br />
-            extract insights, ask anything.
+
+        {/* Headline */}
+        <div className="mb-8">
+          <h1
+            className="text-6xl font-extralight text-slate-900 tracking-tight leading-none mb-4"
+            style={{ letterSpacing: '-2px' }}
+          >
+            Hello.
+          </h1>
+          <p className="text-lg text-slate-500 leading-relaxed">
+            I am XandaCross,<br />
+            your personal knowledge brain.
           </p>
         </div>
 
+        {/* Orb */}
+        <Orb />
+
         {/* Feature list */}
-        <div className="space-y-3 mb-8">
+        <div className="space-y-2.5 mb-8">
           {features.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="flex items-start gap-3 bg-navy-800/60 border border-navy-600 rounded-xl px-4 py-3">
-              <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div
+              key={title}
+              className="flex items-start gap-3 bg-navy-800 border border-navy-600 rounded-xl px-4 py-3"
+            >
+              <div className="w-8 h-8 rounded-lg bg-accent-light/10 border border-accent-light/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Icon size={15} className="text-accent-light" />
               </div>
               <div>
-                <div className="text-sm font-semibold text-white">{title}</div>
-                <div className="text-xs text-slate-400 mt-0.5">{desc}</div>
+                <div className="text-sm font-semibold text-slate-800">{title}</div>
+                <div className="text-xs text-slate-500 mt-0.5">{desc}</div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Primary: Google Sign-In */}
+        {/* Primary: Google */}
         <button
           onClick={onLogin}
-          className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-xl transition-all duration-150 shadow-md hover:shadow-lg border border-gray-200 active:scale-[0.99]"
+          className="w-full flex items-center justify-center gap-3 bg-slate-900 hover:bg-slate-800 text-white font-medium py-3.5 px-6 rounded-xl transition-all duration-150 shadow-md hover:shadow-lg active:scale-[0.99]"
         >
           <GoogleLogo />
           <span className="text-[15px]">Continue with Google</span>
         </button>
 
-        {/* Secondary: Replit (legacy, shown only when available) */}
+        {/* Secondary: Replit */}
         {onLoginReplit && (
           <button
             onClick={onLoginReplit}
-            className="w-full flex items-center justify-center gap-3 mt-3 bg-navy-800/60 hover:bg-navy-700/60 text-slate-300 hover:text-white font-medium py-2.5 px-6 rounded-xl transition-all duration-150 border border-navy-600 text-sm"
+            className="w-full flex items-center justify-center gap-3 mt-3 bg-navy-800 hover:bg-navy-700 text-slate-600 hover:text-slate-800 font-medium py-2.5 px-6 rounded-xl transition-all duration-150 border border-navy-600 text-sm"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
             Sign in with Replit
           </button>
         )}
 
-        <p className="text-center text-xs text-slate-500 mt-4">
+        <p className="text-center text-xs text-slate-400 mt-4">
           Your knowledge is private and only visible to you.
         </p>
       </div>
