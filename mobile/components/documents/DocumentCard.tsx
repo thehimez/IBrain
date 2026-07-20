@@ -4,11 +4,11 @@ import { Colors } from '../../constants/colors';
 import type { XandaCrossFile } from '../../types';
 import { formatBytes, formatRelativeTime } from '../../utils/format';
 
-const EXT_COLORS: Record<string, string> = {
-  md:   '#3b82f6',
-  txt:  '#10b981',
-  html: '#f59e0b',
-  json: '#8b5cf6',
+const EXT_CONFIG: Record<string, { color: string; bg: string }> = {
+  md:   { color: '#497e7e', bg: 'rgba(73,126,126,0.10)' },
+  txt:  { color: '#6b7280', bg: 'rgba(107,114,128,0.10)' },
+  html: { color: '#ef5520', bg: 'rgba(239,85,32,0.10)' },
+  json: { color: '#224348', bg: 'rgba(34,67,72,0.10)' },
 };
 
 function extFromMime(mime: string, filename: string): string {
@@ -27,7 +27,7 @@ interface Props {
 
 export default function DocumentCard({ file, onPress }: Props) {
   const ext = extFromMime(file.mime_type, file.filename);
-  const color = EXT_COLORS[ext] ?? Colors.accent.default;
+  const cfg = EXT_CONFIG[ext] ?? { color: Colors.accent.default, bg: Colors.accent.bg };
 
   return (
     <TouchableOpacity
@@ -36,44 +36,45 @@ export default function DocumentCard({ file, onPress }: Props) {
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 14,
+        gap: 14,
+        paddingHorizontal: 20,
+        paddingVertical: 16,
         borderBottomWidth: 1,
         borderBottomColor: Colors.border.subtle,
-        backgroundColor: Colors.bg.primary,
+        backgroundColor: Colors.bg.secondary,
       }}
     >
       {/* Type badge */}
       <View
         style={{
-          width: 42,
-          height: 42,
-          borderRadius: 10,
-          backgroundColor: color + '22',
-          borderWidth: 1,
-          borderColor: color + '44',
+          width: 44,
+          height: 44,
+          borderRadius: 12,
+          backgroundColor: cfg.bg,
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
         }}
       >
-        <Text style={{ fontSize: 10, fontWeight: '700', color, fontFamily: 'monospace' }}>
+        <Text style={{ fontSize: 10, fontWeight: '700', color: cfg.color, letterSpacing: 0.5 }}>
           {ext.toUpperCase()}
         </Text>
       </View>
 
       {/* Info */}
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={{ fontSize: 14, fontWeight: '500', color: Colors.text.primary }} numberOfLines={1}>
+        <Text
+          style={{ fontSize: 15, fontWeight: '500', color: Colors.text.primary }}
+          numberOfLines={1}
+        >
           {file.filename}
         </Text>
-        <Text style={{ fontSize: 11, color: Colors.text.muted, marginTop: 2 }}>
+        <Text style={{ fontSize: 12, color: Colors.text.muted, marginTop: 3 }}>
           {formatBytes(file.size_bytes)} · {formatRelativeTime(file.created_at)}
         </Text>
       </View>
 
-      <Text style={{ color: Colors.text.disabled, fontSize: 18 }}>›</Text>
+      <Text style={{ color: Colors.border.default, fontSize: 20 }}>›</Text>
     </TouchableOpacity>
   );
 }

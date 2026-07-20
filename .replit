@@ -73,7 +73,8 @@ outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd mobile && bun start"
+args = "cd mobile && bun run web"
+waitForPort = 8081
 
 [[ports]]
 localPort = 3001

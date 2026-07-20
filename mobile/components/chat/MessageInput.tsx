@@ -30,9 +30,7 @@ export default function MessageInput({ onSend, disabled = false }: Props) {
   const canSend = text.trim().length > 0 && !disabled;
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View
         style={{
           flexDirection: 'row',
@@ -42,7 +40,7 @@ export default function MessageInput({ onSend, disabled = false }: Props) {
           paddingVertical: 12,
           borderTopWidth: 1,
           borderTopColor: Colors.border.default,
-          backgroundColor: Colors.bg.primary,
+          backgroundColor: Colors.bg.secondary,
         }}
       >
         <TextInput
@@ -56,13 +54,13 @@ export default function MessageInput({ onSend, disabled = false }: Props) {
           onSubmitEditing={Platform.OS === 'ios' ? undefined : handleSend}
           style={{
             flex: 1,
-            minHeight: 40,
+            minHeight: 42,
             maxHeight: 120,
-            paddingHorizontal: 14,
+            paddingHorizontal: 16,
             paddingVertical: 10,
-            borderRadius: 20,
-            backgroundColor: Colors.bg.secondary,
-            borderWidth: 1,
+            borderRadius: 21,
+            backgroundColor: Colors.bg.primary,
+            borderWidth: 1.5,
             borderColor: text.length > 0 ? Colors.border.focus : Colors.border.default,
             color: Colors.text.primary,
             fontSize: 15,
@@ -72,19 +70,24 @@ export default function MessageInput({ onSend, disabled = false }: Props) {
         <TouchableOpacity
           onPress={handleSend}
           disabled={!canSend}
+          activeOpacity={0.75}
           style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            backgroundColor: canSend ? Colors.accent.default : Colors.bg.secondary,
-            borderWidth: 1,
-            borderColor: canSend ? Colors.accent.dim : Colors.border.default,
+            width: 42,
+            height: 42,
+            borderRadius: 21,
+            backgroundColor: canSend ? Colors.orange : Colors.bg.primary,
+            borderWidth: 1.5,
+            borderColor: canSend ? Colors.orange : Colors.border.default,
             alignItems: 'center',
             justifyContent: 'center',
+            shadowColor: canSend ? Colors.orange : 'transparent',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.35,
+            shadowRadius: 8,
+            elevation: canSend ? 4 : 0,
           }}
-          activeOpacity={0.7}
         >
-          <Text style={{ fontSize: 18, opacity: canSend ? 1 : 0.4 }}>↑</Text>
+          <Text style={{ fontSize: 18, color: canSend ? '#fff' : Colors.text.disabled }}>↑</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

@@ -37,6 +37,13 @@ export default function ProfileScreen() {
 
   if (!user) return null;
 
+  const initials = user.name
+    .split(' ')
+    .map(w => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
   const sections = [
     {
       title: 'Account',
@@ -74,76 +81,88 @@ export default function ProfileScreen() {
           borderBottomWidth: 1,
           borderBottomColor: Colors.border.default,
           backgroundColor: Colors.bg.secondary,
-          paddingHorizontal: 16,
-          paddingVertical: 12,
+          paddingHorizontal: 20,
+          paddingVertical: 14,
         }}
       >
-        <Text style={{ fontSize: 14, fontWeight: '700', color: Colors.text.primary }}>Profile</Text>
+        <Text style={{ fontSize: 17, fontWeight: '600', color: Colors.text.primary }}>Profile</Text>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 20 }}>
-        {/* Avatar card */}
+      <ScrollView contentContainerStyle={{ padding: 20, gap: 20 }}>
+        {/* Avatar hero card */}
         <View
           style={{
-            flexDirection: 'row',
             alignItems: 'center',
-            gap: 16,
-            padding: 20,
-            borderRadius: 16,
+            padding: 28,
+            borderRadius: 20,
             backgroundColor: Colors.bg.secondary,
             borderWidth: 1,
             borderColor: Colors.border.default,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 10,
+            elevation: 1,
           }}
         >
+          {/* Avatar circle */}
           <View
             style={{
-              width: 56,
-              height: 56,
-              borderRadius: 28,
-              backgroundColor: Colors.accent.bg,
-              borderWidth: 2,
-              borderColor: Colors.accent.border,
+              width: 72,
+              height: 72,
+              borderRadius: 36,
+              backgroundColor: Colors.accent.default,
               alignItems: 'center',
               justifyContent: 'center',
+              marginBottom: 14,
+              shadowColor: Colors.accent.default,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 10,
+              elevation: 4,
             }}
           >
-            <Text style={{ fontSize: 26 }}>
-              {user.avatarUrl ? '👤' : user.name.charAt(0).toUpperCase()}
+            <Text style={{ fontSize: 26, fontWeight: '600', color: '#fff' }}>{initials}</Text>
+          </View>
+
+          <Text style={{ fontSize: 20, fontWeight: '600', color: Colors.text.primary }}>{user.name}</Text>
+          {user.email && (
+            <Text style={{ fontSize: 13, color: Colors.text.muted, marginTop: 4 }}>{user.email}</Text>
+          )}
+
+          {/* Provider badge */}
+          <View
+            style={{
+              marginTop: 10,
+              paddingHorizontal: 12,
+              paddingVertical: 4,
+              borderRadius: 12,
+              backgroundColor: Colors.orangeLight,
+              borderWidth: 1,
+              borderColor: Colors.orangeBorder,
+            }}
+          >
+            <Text style={{ fontSize: 11, fontWeight: '600', color: Colors.orange, textTransform: 'capitalize' }}>
+              {user.provider}
             </Text>
           </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.text.primary }}>
-              {user.name}
-            </Text>
-            {user.email && (
-              <Text style={{ fontSize: 13, color: Colors.text.secondary, marginTop: 2 }}>
-                {user.email}
-              </Text>
-            )}
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 4,
-                marginTop: 6,
-              }}
-            >
+
+          {/* Brain status dot */}
+          {brainStatus && (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 14 }}>
               <View
                 style={{
-                  paddingHorizontal: 8,
-                  paddingVertical: 2,
-                  borderRadius: 6,
-                  backgroundColor: Colors.accent.bg,
-                  borderWidth: 1,
-                  borderColor: Colors.accent.border,
+                  width: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  backgroundColor: brainStatus.connected ? Colors.success : Colors.border.default,
                 }}
-              >
-                <Text style={{ fontSize: 10, fontWeight: '600', color: Colors.accent.light, textTransform: 'capitalize' }}>
-                  {user.provider}
-                </Text>
-              </View>
+              />
+              <Text style={{ fontSize: 12, color: Colors.text.muted }}>
+                {brainStatus.connected ? `${brainStatus.pageCount} pages indexed` : 'Offline'}
+              </Text>
             </View>
-          </View>
+          )}
         </View>
 
         {/* Info sections */}
@@ -155,20 +174,25 @@ export default function ProfileScreen() {
                 fontWeight: '600',
                 color: Colors.text.muted,
                 textTransform: 'uppercase',
-                letterSpacing: 0.5,
+                letterSpacing: 0.8,
                 marginBottom: 8,
-                paddingHorizontal: 4,
+                marginLeft: 4,
               }}
             >
               {section.title}
             </Text>
             <View
               style={{
-                borderRadius: 14,
+                borderRadius: 16,
                 backgroundColor: Colors.bg.secondary,
                 borderWidth: 1,
                 borderColor: Colors.border.default,
                 overflow: 'hidden',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.04,
+                shadowRadius: 4,
+                elevation: 1,
               }}
             >
               {section.items.map((item, i) => (
@@ -179,23 +203,24 @@ export default function ProfileScreen() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     paddingHorizontal: 16,
-                    paddingVertical: 13,
+                    paddingVertical: 14,
                     borderBottomWidth: i < section.items.length - 1 ? 1 : 0,
                     borderBottomColor: Colors.border.subtle,
                     gap: 12,
                   }}
                 >
-                  <Text style={{ fontSize: 14, color: Colors.text.secondary, flexShrink: 0 }}>
+                  <Text style={{ fontSize: 14, color: Colors.text.muted, flexShrink: 0 }}>
                     {item.label}
                   </Text>
                   <Text
                     style={{
-                      fontSize: item.mono ? 11 : 13,
+                      fontSize: item.mono ? 11 : 14,
                       color: item.value.startsWith('●') ? Colors.success : Colors.text.primary,
                       fontFamily: item.mono ? 'monospace' : undefined,
                       textTransform: item.capitalize ? 'capitalize' : undefined,
                       textAlign: 'right',
                       flex: 1,
+                      fontWeight: '500',
                     }}
                     numberOfLines={1}
                   >
@@ -211,27 +236,24 @@ export default function ProfileScreen() {
         <TouchableOpacity
           onPress={handleLogout}
           disabled={isLoggingOut}
+          activeOpacity={0.75}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
             gap: 8,
-            paddingVertical: 15,
-            borderRadius: 14,
-            backgroundColor: 'rgba(239,68,68,0.1)',
+            paddingVertical: 16,
+            borderRadius: 16,
+            backgroundColor: 'rgba(239,68,68,0.06)',
             borderWidth: 1,
-            borderColor: 'rgba(239,68,68,0.3)',
+            borderColor: 'rgba(239,68,68,0.2)',
             marginTop: 4,
           }}
-          activeOpacity={0.75}
         >
           {isLoggingOut ? (
             <ActivityIndicator size="small" color={Colors.error} />
           ) : (
-            <>
-              <Text style={{ fontSize: 16 }}>🚪</Text>
-              <Text style={{ fontSize: 15, fontWeight: '600', color: Colors.error }}>Sign out</Text>
-            </>
+            <Text style={{ fontSize: 15, fontWeight: '600', color: Colors.error }}>Sign out</Text>
           )}
         </TouchableOpacity>
 

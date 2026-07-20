@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { Colors } from '../../constants/colors';
@@ -32,61 +32,68 @@ export default function ChatBubble({ message }: Props) {
         flexDirection: isUser ? 'row-reverse' : 'row',
         gap: 10,
         paddingHorizontal: 16,
-        paddingVertical: 4,
+        paddingVertical: 6,
+        alignItems: 'flex-end',
       }}
     >
-      {/* Avatar */}
+      {/* Avatar dot */}
       <View
         style={{
-          width: 30,
-          height: 30,
-          borderRadius: 8,
-          backgroundColor: isUser ? Colors.accent.bg : Colors.bg.secondary,
-          borderWidth: 1,
-          borderColor: isUser ? Colors.accent.border : Colors.border.default,
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          backgroundColor: isUser ? Colors.orange : Colors.accent.bg,
+          borderWidth: 1.5,
+          borderColor: isUser ? Colors.orangeBorder : Colors.accent.border,
           alignItems: 'center',
           justifyContent: 'center',
-          marginTop: 2,
           flexShrink: 0,
+          marginBottom: 2,
         }}
       >
-        <Text style={{ fontSize: 14 }}>{isUser ? '👤' : '🧠'}</Text>
+        <Text style={{ fontSize: 12 }}>{isUser ? '●' : '✦'}</Text>
       </View>
 
       {/* Bubble */}
       <View
         style={{
-          flex: 1,
-          maxWidth: '85%',
+          maxWidth: '80%',
           alignItems: isUser ? 'flex-end' : 'flex-start',
           gap: 4,
         }}
       >
         {/* Timestamp */}
-        <Text style={{ fontSize: 10, color: Colors.text.muted }}>
+        <Text style={{ fontSize: 10, color: Colors.text.muted, marginHorizontal: 4 }}>
           {copied ? '✓ Copied' : formatRelativeTime(message.timestamp)}
         </Text>
 
         {/* Content bubble */}
         <TouchableOpacity
           onLongPress={handleLongPress}
-          activeOpacity={0.85}
+          activeOpacity={0.88}
           style={{
-            maxWidth: '100%',
             paddingHorizontal: 14,
             paddingVertical: 10,
-            borderRadius: 14,
-            borderTopRightRadius: isUser ? 4 : 14,
-            borderTopLeftRadius: isUser ? 14 : 4,
-            backgroundColor: isUser ? Colors.accent.bg : Colors.bg.secondary,
-            borderWidth: 1,
-            borderColor: isUser ? Colors.accent.border : Colors.border.default,
+            borderRadius: 18,
+            borderTopRightRadius: isUser ? 4 : 18,
+            borderTopLeftRadius: isUser ? 18 : 4,
+            backgroundColor: isUser ? Colors.text.primary : Colors.bg.secondary,
+            borderWidth: isUser ? 0 : 1,
+            borderColor: Colors.border.default,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.06,
+            shadowRadius: 4,
+            elevation: 1,
           }}
         >
           {message.isStreaming && !message.content ? (
             <TypingIndicator />
           ) : (
-            <MarkdownRenderer content={message.content} />
+            <MarkdownRenderer
+              content={message.content}
+              textStyle={isUser ? { color: '#ffffff' } : { color: Colors.text.primary }}
+            />
           )}
         </TouchableOpacity>
 

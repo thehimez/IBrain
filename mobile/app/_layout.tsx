@@ -89,7 +89,7 @@ export default function RootLayout() {
             refetchUser,
           }}
         >
-          <StatusBar style="light" />
+          <StatusBar style="dark" />
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="auth" />
             <Stack.Screen name="(auth)" />

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, SafeAreaView, ScrollView, TouchableOpacity,
-  TextInput, Modal,
+  View, Text, SafeAreaView, ScrollView, TouchableOpacity, Modal,
 } from 'react-native';
 import { useGraph } from '../../hooks/useGraph';
 import { Colors } from '../../constants/colors';
@@ -11,10 +10,15 @@ import ErrorView from '../../components/common/ErrorView';
 import EmptyState from '../../components/common/EmptyState';
 import type { GraphNode } from '../../types';
 
+const STAT_COLORS = [
+  { color: Colors.accent.default, bg: Colors.accent.bg },
+  { color: Colors.orange,         bg: Colors.orangeLight },
+  { color: Colors.accent.dim,     bg: 'rgba(34,67,72,0.08)' },
+];
+
 export default function GraphScreen() {
   const { data, isLoading, error, refetch } = useGraph();
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
-  const [search, setSearch] = useState('');
   const [showDetail, setShowDetail] = useState(false);
 
   const handleSelectNode = (node: GraphNode | null) => {
@@ -42,67 +46,59 @@ export default function GraphScreen() {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingHorizontal: 16,
-            paddingVertical: 12,
+            paddingHorizontal: 20,
+            paddingVertical: 14,
           }}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Text style={{ fontSize: 22 }}>🕸️</Text>
-            <View>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: Colors.text.primary }}>
-                Knowledge Graph
-              </Text>
-              <Text style={{ fontSize: 10, color: Colors.text.muted }}>
-                Your private knowledge network
-              </Text>
-            </View>
+          <View>
+            <Text style={{ fontSize: 17, fontWeight: '600', color: Colors.text.primary }}>
+              Knowledge Graph
+            </Text>
+            <Text style={{ fontSize: 12, color: Colors.text.muted }}>
+              Your private knowledge network
+            </Text>
           </View>
           <TouchableOpacity
             onPress={() => refetch()}
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              backgroundColor: Colors.bg.tertiary,
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: Colors.bg.primary,
+              borderWidth: 1,
+              borderColor: Colors.border.default,
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <Text style={{ fontSize: 16 }}>↺</Text>
+            <Text style={{ fontSize: 16, color: Colors.text.secondary }}>↺</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Stats */}
+        {/* Stats chips */}
         {data && (
-          <View
-            style={{
-              flexDirection: 'row',
-              paddingHorizontal: 16,
-              paddingBottom: 12,
-              gap: 8,
-            }}
-          >
+          <View style={{ flexDirection: 'row', paddingHorizontal: 20, paddingBottom: 14, gap: 8 }}>
             {[
-              { label: 'Pages', value: data.stats.pages, color: Colors.accent.default },
-              { label: 'Entities', value: data.stats.entities, color: Colors.warning },
-              { label: 'Links', value: data.stats.relationships, color: Colors.success },
-            ].map(s => (
+              { label: 'Pages', value: data.stats.pages },
+              { label: 'Entities', value: data.stats.entities },
+              { label: 'Links', value: data.stats.relationships },
+            ].map((s, i) => (
               <View
                 key={s.label}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  gap: 4,
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                  borderRadius: 8,
-                  backgroundColor: s.color + '20',
-                  borderWidth: 1,
-                  borderColor: s.color + '40',
+                  gap: 5,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  borderRadius: 20,
+                  backgroundColor: STAT_COLORS[i].bg,
                 }}
               >
-                <Text style={{ fontSize: 12, fontWeight: '700', color: s.color }}>{s.value}</Text>
-                <Text style={{ fontSize: 10, color: Colors.text.muted }}>{s.label}</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: STAT_COLORS[i].color }}>
+                  {s.value}
+                </Text>
+                <Text style={{ fontSize: 11, color: Colors.text.muted }}>{s.label}</Text>
               </View>
             ))}
           </View>
@@ -114,16 +110,12 @@ export default function GraphScreen() {
         <EmptyState
           icon={<Text style={{ fontSize: 28 }}>🕸️</Text>}
           title="No graph data yet"
-          description="Upload documents and XandaCross will extract entities and relationships to populate your knowledge graph."
+          description="Upload documents and XandaCross will extract entities and relationships."
         />
       ) : (
         <ScrollView style={{ flex: 1 }} scrollEnabled={false}>
-          <GraphCanvas
-            data={data!}
-            onSelectNode={handleSelectNode}
-            selectedNodeId={selectedNode?.id ?? null}
-          />
-          <Text style={{ textAlign: 'center', fontSize: 11, color: Colors.text.muted, padding: 8 }}>
+          <GraphCanvas data={data!} onSelectNode={handleSelectNode} selectedNodeId={selectedNode?.id ?? null} />
+          <Text style={{ textAlign: 'center', fontSize: 11, color: Colors.text.muted, padding: 10 }}>
             Pan to explore · Tap a node to inspect
           </Text>
         </ScrollView>
@@ -137,73 +129,87 @@ export default function GraphScreen() {
         onRequestClose={() => setShowDetail(false)}
       >
         {selectedNode && (
-          <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bg.secondary }}>
+          <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bg.primary }}>
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                paddingHorizontal: 16,
-                paddingVertical: 14,
+                paddingHorizontal: 20,
+                paddingVertical: 16,
                 borderBottomWidth: 1,
                 borderBottomColor: Colors.border.default,
+                backgroundColor: Colors.bg.secondary,
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.text.primary }}>
+              <Text style={{ fontSize: 17, fontWeight: '600', color: Colors.text.primary }}>
                 Node Details
               </Text>
               <TouchableOpacity onPress={() => setShowDetail(false)}>
-                <Text style={{ color: Colors.accent.light, fontSize: 14 }}>Close</Text>
+                <Text style={{ color: Colors.accent.default, fontSize: 15, fontWeight: '500' }}>Close</Text>
               </TouchableOpacity>
             </View>
 
             <ScrollView contentContainerStyle={{ padding: 20, gap: 16 }}>
-              {/* Node name + type */}
+              {/* Name + type */}
               <View
                 style={{
-                  padding: 16,
-                  borderRadius: 14,
-                  backgroundColor: Colors.bg.primary,
+                  padding: 20,
+                  borderRadius: 16,
+                  backgroundColor: Colors.bg.secondary,
                   borderWidth: 1,
                   borderColor: Colors.border.default,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.05,
+                  shadowRadius: 8,
+                  elevation: 1,
                 }}
               >
-                <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.text.primary, marginBottom: 4 }}>
+                <Text style={{ fontSize: 22, fontWeight: '600', color: Colors.text.primary, marginBottom: 4 }}>
                   {selectedNode.label}
                 </Text>
-                <Text style={{ fontSize: 12, color: Colors.text.muted, textTransform: 'capitalize' }}>
-                  {selectedNode.kind ?? selectedNode.type}
-                </Text>
+                <View
+                  style={{
+                    alignSelf: 'flex-start',
+                    paddingHorizontal: 10,
+                    paddingVertical: 4,
+                    borderRadius: 10,
+                    backgroundColor: Colors.accent.bg,
+                    marginTop: 4,
+                  }}
+                >
+                  <Text style={{ fontSize: 11, color: Colors.accent.default, fontWeight: '600', textTransform: 'capitalize' }}>
+                    {selectedNode.kind ?? selectedNode.type}
+                  </Text>
+                </View>
               </View>
 
-              {/* Slug */}
               {selectedNode.slug && (
                 <View>
-                  <Text style={{ fontSize: 11, color: Colors.text.muted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
-                    Source document
+                  <Text style={{ fontSize: 11, color: Colors.text.muted, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 6 }}>
+                    Source
                   </Text>
-                  <Text style={{ fontSize: 13, color: Colors.accent.light, fontFamily: 'monospace' }}>
+                  <Text style={{ fontSize: 13, color: Colors.accent.default, fontFamily: 'monospace' }}>
                     {selectedNode.slug}
                   </Text>
                 </View>
               )}
 
-              {/* Claim */}
               {selectedNode.claim && (
                 <View>
-                  <Text style={{ fontSize: 11, color: Colors.text.muted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
+                  <Text style={{ fontSize: 11, color: Colors.text.muted, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 6 }}>
                     Claim
                   </Text>
-                  <Text style={{ fontSize: 14, color: Colors.text.secondary, lineHeight: 20 }}>
+                  <Text style={{ fontSize: 14, color: Colors.text.secondary, lineHeight: 21 }}>
                     {selectedNode.claim}
                   </Text>
                 </View>
               )}
 
-              {/* Relationships from graph data */}
               {data && (
                 <View>
-                  <Text style={{ fontSize: 11, color: Colors.text.muted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+                  <Text style={{ fontSize: 11, color: Colors.text.muted, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 10 }}>
                     Relationships
                   </Text>
                   {data.edges
@@ -219,17 +225,17 @@ export default function GraphScreen() {
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
-                            gap: 10,
-                            paddingVertical: 10,
+                            gap: 12,
+                            paddingVertical: 12,
                             borderBottomWidth: 1,
                             borderBottomColor: Colors.border.subtle,
                           }}
                         >
-                          <Text style={{ fontSize: 12, color: Colors.text.muted, width: 16 }}>
+                          <Text style={{ fontSize: 13, color: Colors.orange, width: 18 }}>
                             {isOut ? '→' : '←'}
                           </Text>
                           <View style={{ flex: 1 }}>
-                            <Text style={{ fontSize: 13, color: Colors.text.primary }}>
+                            <Text style={{ fontSize: 14, color: Colors.text.primary, fontWeight: '500' }}>
                               {other?.label ?? otherId}
                             </Text>
                             <Text style={{ fontSize: 11, color: Colors.text.muted }}>{e.label}</Text>

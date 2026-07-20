@@ -30,12 +30,13 @@ export default function ChatScreen() {
 
   const messages = currentConversation?.messages ?? [];
 
-  // Auto-scroll to bottom on new messages
   useEffect(() => {
     if (messages.length > 0) {
       setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 100);
     }
   }, [messages.length]);
+
+  const greeting = user?.name ? `Good day, ${user.name.split(' ')[0]}.` : 'Ask anything.';
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bg.primary }}>
@@ -45,8 +46,8 @@ export default function ChatScreen() {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingHorizontal: 16,
-          paddingVertical: 12,
+          paddingHorizontal: 20,
+          paddingVertical: 14,
           borderBottomWidth: 1,
           borderBottomColor: Colors.border.default,
           backgroundColor: Colors.bg.secondary,
@@ -54,46 +55,44 @@ export default function ChatScreen() {
       >
         <TouchableOpacity
           onPress={() => setShowConversations(true)}
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}
         >
-          <Text style={{ fontSize: 22 }}>🧠</Text>
-          <View style={{ flex: 1, minWidth: 0 }}>
+          {/* Teal orb logo */}
+          <View
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: Colors.orange,
+              alignItems: 'center',
+              justifyContent: 'center',
+              shadowColor: Colors.orange,
+              shadowOffset: { width: 0, height: 3 },
+              shadowOpacity: 0.35,
+              shadowRadius: 6,
+              elevation: 3,
+            }}
+          />
+          <View style={{ flex: 1 }}>
             <Text
-              style={{ fontSize: 14, fontWeight: '600', color: Colors.text.primary }}
+              style={{ fontSize: 15, fontWeight: '600', color: Colors.text.primary }}
               numberOfLines={1}
             >
               {currentConversation?.title ?? 'XandaCross'}
             </Text>
-            <Text style={{ fontSize: 10, color: Colors.text.muted }}>
-              {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
+            <Text style={{ fontSize: 11, color: Colors.text.muted }}>
+              {conversations.length} conversation{conversations.length !== 1 ? 's' : ''} ▾
             </Text>
           </View>
-          <Text style={{ color: Colors.text.muted, fontSize: 12 }}>▾</Text>
         </TouchableOpacity>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10, gap: 8 }}>
-          <TouchableOpacity
-            onPress={() => logout()}
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              backgroundColor: Colors.bg.primary,
-              borderWidth: 1,
-              borderColor: Colors.border.default,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Text style={{ color: Colors.text.secondary, fontSize: 16 }}>⏻</Text>
-          </TouchableOpacity>
-
+        <View style={{ flexDirection: 'row', gap: 8 }}>
           <TouchableOpacity
             onPress={createConversation}
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
+              width: 34,
+              height: 34,
+              borderRadius: 17,
               backgroundColor: Colors.accent.bg,
               borderWidth: 1,
               borderColor: Colors.accent.border,
@@ -101,33 +100,80 @@ export default function ChatScreen() {
               justifyContent: 'center',
             }}
           >
-            <Text style={{ color: Colors.accent.light, fontSize: 18 }}>+</Text>
+            <Text style={{ color: Colors.accent.default, fontSize: 20, lineHeight: 24 }}>+</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => logout()}
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 17,
+              backgroundColor: Colors.bg.primary,
+              borderWidth: 1,
+              borderColor: Colors.border.default,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ color: Colors.text.muted, fontSize: 14 }}>⏻</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Messages */}
+      {/* Messages / empty state */}
       {messages.length === 0 ? (
-        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 32, gap: 12 }}>
-          <Text style={{ fontSize: 18, fontWeight: '700', color: Colors.text.primary, textAlign: 'center', marginBottom: 8 }}>
-            Ask your brain anything
+        <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 36 }}>
+          <Text
+            style={{
+              fontSize: 26,
+              fontWeight: '300',
+              color: Colors.text.primary,
+              letterSpacing: -0.5,
+              marginBottom: 4,
+            }}
+          >
+            {greeting}
           </Text>
-          {SUGGESTIONS.map((s, i) => (
-            <TouchableOpacity
-              key={i}
-              onPress={() => sendMessage(s)}
-              style={{
-                padding: 14,
-                borderRadius: 12,
-                backgroundColor: Colors.bg.secondary,
-                borderWidth: 1,
-                borderColor: Colors.border.default,
-              }}
-              activeOpacity={0.7}
-            >
-              <Text style={{ fontSize: 13, color: Colors.text.secondary, lineHeight: 18 }}>{s}</Text>
-            </TouchableOpacity>
-          ))}
+          <Text style={{ fontSize: 14, color: Colors.text.muted, marginBottom: 28 }}>
+            Tap a suggestion or type a question.
+          </Text>
+
+          <View style={{ gap: 10 }}>
+            {SUGGESTIONS.map((s, i) => (
+              <TouchableOpacity
+                key={i}
+                onPress={() => sendMessage(s)}
+                activeOpacity={0.7}
+                style={{
+                  padding: 16,
+                  borderRadius: 14,
+                  backgroundColor: Colors.bg.secondary,
+                  borderWidth: 1,
+                  borderColor: Colors.border.default,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 1 },
+                  shadowOpacity: 0.04,
+                  shadowRadius: 4,
+                  elevation: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 12,
+                }}
+              >
+                <View
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: 3,
+                    backgroundColor: i === 0 ? Colors.orange : Colors.accent.default,
+                  }}
+                />
+                <Text style={{ fontSize: 14, color: Colors.text.secondary, flex: 1, lineHeight: 19 }}>
+                  {s}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       ) : (
         <FlatList
@@ -135,7 +181,7 @@ export default function ChatScreen() {
           data={messages}
           keyExtractor={item => item.id}
           renderItem={({ item }) => <ChatBubble message={item} />}
-          contentContainerStyle={{ paddingVertical: 12 }}
+          contentContainerStyle={{ paddingVertical: 16 }}
           showsVerticalScrollIndicator={false}
           onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
         />
@@ -143,13 +189,20 @@ export default function ChatScreen() {
 
       {/* Sending indicator */}
       {isSending && (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 16, paddingVertical: 8 }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 8,
+            paddingHorizontal: 20,
+            paddingVertical: 8,
+          }}
+        >
           <ActivityIndicator size="small" color={Colors.accent.default} />
           <Text style={{ fontSize: 12, color: Colors.text.muted }}>Thinking…</Text>
         </View>
       )}
 
-      {/* Input */}
       <MessageInput onSend={sendMessage} disabled={isSending} />
 
       {/* Conversation drawer */}

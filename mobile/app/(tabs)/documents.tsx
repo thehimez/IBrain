@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity, SafeAreaView,
-  Modal, ScrollView, Pressable, Alert, ActivityIndicator,
+  Modal, ScrollView, Alert, ActivityIndicator,
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
@@ -30,7 +30,6 @@ export default function DocumentsScreen() {
         multiple: true,
         copyToCacheDirectory: true,
       });
-
       if (result.canceled) return;
 
       const entries: FileUploadEntry[] = [];
@@ -41,7 +40,6 @@ export default function DocumentsScreen() {
           Alert.alert('Unsupported file', `"${asset.name}" is not supported. Use: .txt, .md, .html, .json`);
           continue;
         }
-
         let content = '';
         try {
           content = await FileSystem.readAsStringAsync(asset.uri, { encoding: FileSystem.EncodingType.UTF8 });
@@ -49,23 +47,10 @@ export default function DocumentsScreen() {
           Alert.alert('Read error', `Could not read "${asset.name}"`);
           continue;
         }
-
-        entries.push({
-          id: generateId(),
-          name: asset.name,
-          size: asset.size ?? content.length,
-          mimeType,
-          content,
-          status: 'pending',
-          progress: 0,
-        });
+        entries.push({ id: generateId(), name: asset.name, size: asset.size ?? content.length, mimeType, content, status: 'pending', progress: 0 });
       }
-
-      if (entries.length > 0) {
-        addToQueue(entries);
-        setShowUpload(true);
-      }
-    } catch (err) {
+      if (entries.length > 0) { addToQueue(entries); setShowUpload(true); }
+    } catch {
       Alert.alert('Error', 'Could not open document picker');
     }
   };
@@ -87,40 +72,41 @@ export default function DocumentsScreen() {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingHorizontal: 16,
-          paddingVertical: 12,
+          paddingHorizontal: 20,
+          paddingVertical: 14,
           borderBottomWidth: 1,
           borderBottomColor: Colors.border.default,
           backgroundColor: Colors.bg.secondary,
         }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <Text style={{ fontSize: 22 }}>📄</Text>
-          <View>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: Colors.text.primary }}>
-              Documents
-            </Text>
-            <Text style={{ fontSize: 10, color: Colors.text.muted }}>
-              {files.length} file{files.length !== 1 ? 's' : ''}
-            </Text>
-          </View>
+        <View>
+          <Text style={{ fontSize: 17, fontWeight: '600', color: Colors.text.primary }}>
+            Documents
+          </Text>
+          <Text style={{ fontSize: 12, color: Colors.text.muted }}>
+            {files.length} file{files.length !== 1 ? 's' : ''}
+          </Text>
         </View>
         <TouchableOpacity
           onPress={pickDocument}
+          activeOpacity={0.8}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             gap: 6,
-            paddingHorizontal: 14,
-            paddingVertical: 8,
-            borderRadius: 10,
-            backgroundColor: Colors.accent.bg,
-            borderWidth: 1,
-            borderColor: Colors.accent.border,
+            paddingHorizontal: 16,
+            paddingVertical: 9,
+            borderRadius: 20,
+            backgroundColor: Colors.orange,
+            shadowColor: Colors.orange,
+            shadowOffset: { width: 0, height: 3 },
+            shadowOpacity: 0.3,
+            shadowRadius: 6,
+            elevation: 3,
           }}
         >
-          <Text style={{ color: Colors.accent.light, fontSize: 14 }}>+</Text>
-          <Text style={{ color: Colors.accent.light, fontSize: 13, fontWeight: '600' }}>Upload</Text>
+          <Text style={{ color: '#fff', fontSize: 18, lineHeight: 20 }}>+</Text>
+          <Text style={{ color: '#fff', fontSize: 13, fontWeight: '600' }}>Upload</Text>
         </TouchableOpacity>
       </View>
 
@@ -133,18 +119,18 @@ export default function DocumentsScreen() {
         <EmptyState
           icon={<Text style={{ fontSize: 28 }}>📄</Text>}
           title="No documents yet"
-          description="Upload .txt, .md, .html, or .json files to start building your knowledge brain."
+          description="Upload .txt, .md, .html, or .json files to build your knowledge brain."
           action={
             <TouchableOpacity
               onPress={pickDocument}
               style={{
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                borderRadius: 12,
-                backgroundColor: Colors.accent.default,
+                paddingHorizontal: 24,
+                paddingVertical: 12,
+                borderRadius: 20,
+                backgroundColor: Colors.orange,
               }}
             >
-              <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>Pick files</Text>
+              <Text style={{ color: '#fff', fontWeight: '600', fontSize: 15 }}>Pick files</Text>
             </TouchableOpacity>
           }
         />
@@ -152,12 +138,11 @@ export default function DocumentsScreen() {
         <FlatList
           data={files}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <DocumentCard file={item} onPress={() => setPreviewFile(item)} />
-          )}
+          renderItem={({ item }) => <DocumentCard file={item} onPress={() => setPreviewFile(item)} />}
           onRefresh={refetch}
           refreshing={isLoading}
           showsVerticalScrollIndicator={false}
+          style={{ backgroundColor: Colors.bg.secondary }}
         />
       )}
 
@@ -169,61 +154,40 @@ export default function DocumentsScreen() {
         onRequestClose={() => { if (!isUploading) setShowUpload(false); }}
       >
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bg.primary }}>
-          {/* Modal header */}
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              paddingVertical: 14,
+              paddingHorizontal: 20,
+              paddingVertical: 16,
               borderBottomWidth: 1,
               borderBottomColor: Colors.border.default,
+              backgroundColor: Colors.bg.secondary,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.text.primary }}>
-              Upload Queue
-            </Text>
+            <Text style={{ fontSize: 17, fontWeight: '600', color: Colors.text.primary }}>Upload Queue</Text>
             {!isUploading && (
               <TouchableOpacity onPress={() => setShowUpload(false)}>
-                <Text style={{ color: Colors.accent.light, fontSize: 14 }}>Close</Text>
+                <Text style={{ color: Colors.accent.default, fontSize: 15, fontWeight: '500' }}>Close</Text>
               </TouchableOpacity>
             )}
           </View>
 
           <ScrollView contentContainerStyle={{ padding: 16, gap: 10 }}>
             {queue.map(entry => (
-              <UploadProgress
-                key={entry.id}
-                entry={entry}
-                onRemove={() => removeFromQueue(entry.id)}
-                uploading={isUploading}
-              />
+              <UploadProgress key={entry.id} entry={entry} onRemove={() => removeFromQueue(entry.id)} uploading={isUploading} />
             ))}
           </ScrollView>
 
-          {/* Actions */}
           {!allDone ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                gap: 10,
-                padding: 16,
-                borderTopWidth: 1,
-                borderTopColor: Colors.border.default,
-              }}
-            >
+            <View style={{ flexDirection: 'row', gap: 10, padding: 16, borderTopWidth: 1, borderTopColor: Colors.border.default }}>
               {!isUploading && (
                 <TouchableOpacity
                   onPress={() => { clearQueue(); setShowUpload(false); }}
                   style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    paddingVertical: 13,
-                    borderRadius: 12,
-                    backgroundColor: Colors.bg.secondary,
-                    borderWidth: 1,
-                    borderColor: Colors.border.default,
+                    flex: 1, alignItems: 'center', paddingVertical: 14, borderRadius: 14,
+                    backgroundColor: Colors.bg.primary, borderWidth: 1, borderColor: Colors.border.default,
                   }}
                 >
                   <Text style={{ color: Colors.text.secondary, fontWeight: '600' }}>Cancel</Text>
@@ -233,14 +197,9 @@ export default function DocumentsScreen() {
                 onPress={handleUpload}
                 disabled={pendingCount === 0 || isUploading}
                 style={{
-                  flex: 2,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  paddingVertical: 13,
-                  borderRadius: 12,
-                  backgroundColor: pendingCount > 0 && !isUploading ? Colors.accent.default : Colors.bg.secondary,
+                  flex: 2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+                  gap: 8, paddingVertical: 14, borderRadius: 14,
+                  backgroundColor: pendingCount > 0 && !isUploading ? Colors.orange : Colors.bg.primary,
                   opacity: pendingCount === 0 ? 0.5 : 1,
                 }}
               >
@@ -254,30 +213,15 @@ export default function DocumentsScreen() {
             </View>
           ) : (
             <View style={{ padding: 16, gap: 10 }}>
-              <View
-                style={{
-                  padding: 16,
-                  borderRadius: 14,
-                  backgroundColor: 'rgba(16,185,129,0.1)',
-                  borderWidth: 1,
-                  borderColor: 'rgba(16,185,129,0.3)',
-                }}
-              >
-                <Text style={{ fontSize: 14, fontWeight: '600', color: Colors.success }}>
-                  ✓ Upload complete
-                </Text>
+              <View style={{ padding: 16, borderRadius: 14, backgroundColor: 'rgba(16,185,129,0.08)', borderWidth: 1, borderColor: 'rgba(16,185,129,0.25)' }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: '#10b981' }}>✓ Upload complete</Text>
                 <Text style={{ fontSize: 12, color: Colors.text.secondary, marginTop: 4 }}>
                   Knowledge extraction started in the background.
                 </Text>
               </View>
               <TouchableOpacity
                 onPress={() => { clearQueue(); setShowUpload(false); }}
-                style={{
-                  alignItems: 'center',
-                  paddingVertical: 13,
-                  borderRadius: 12,
-                  backgroundColor: Colors.accent.default,
-                }}
+                style={{ alignItems: 'center', paddingVertical: 14, borderRadius: 14, backgroundColor: Colors.accent.default }}
               >
                 <Text style={{ color: '#fff', fontWeight: '700' }}>Done</Text>
               </TouchableOpacity>
@@ -297,35 +241,22 @@ export default function DocumentsScreen() {
           <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bg.primary }}>
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: 16,
-                paddingVertical: 14,
-                borderBottomWidth: 1,
-                borderBottomColor: Colors.border.default,
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                paddingHorizontal: 20, paddingVertical: 16,
+                borderBottomWidth: 1, borderBottomColor: Colors.border.default,
+                backgroundColor: Colors.bg.secondary,
               }}
             >
-              <Text
-                style={{ fontSize: 14, fontWeight: '600', color: Colors.text.primary, flex: 1 }}
-                numberOfLines={1}
-              >
+              <Text style={{ fontSize: 15, fontWeight: '600', color: Colors.text.primary, flex: 1 }} numberOfLines={1}>
                 {previewFile.filename}
               </Text>
               <TouchableOpacity onPress={() => setPreviewFile(null)}>
-                <Text style={{ color: Colors.accent.light, fontSize: 14 }}>Close</Text>
+                <Text style={{ color: Colors.accent.default, fontSize: 15, fontWeight: '500' }}>Close</Text>
               </TouchableOpacity>
             </View>
-            <ScrollView contentContainerStyle={{ padding: 16 }}>
+            <ScrollView contentContainerStyle={{ padding: 20 }}>
               {previewFile.content_raw ? (
-                <Text
-                  style={{
-                    fontSize: 13,
-                    color: Colors.text.secondary,
-                    fontFamily: 'monospace',
-                    lineHeight: 20,
-                  }}
-                >
+                <Text style={{ fontSize: 13, color: Colors.text.secondary, fontFamily: 'monospace', lineHeight: 21 }}>
                   {previewFile.content_raw}
                 </Text>
               ) : (
