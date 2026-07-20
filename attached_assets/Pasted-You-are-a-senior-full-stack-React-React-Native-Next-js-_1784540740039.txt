@@ -1,0 +1,143 @@
+You are a senior full-stack React/React Native/Next.js engineer.
+
+Implement the following changes without breaking any existing functionality.
+
+1. Remove "Sign in with Replit"
+
+Completely remove the "Sign in with Replit" authentication option from both the UI and authentication flow.
+
+Requirements:
+
+Remove the Sign in with Replit button from:
+Web App
+Android App
+Remove any divider or spacing that existed for this button.
+Keep only:
+Continue with Google
+Ensure the layout remains perfectly centered after removing the button.
+Remove any unused Replit authentication logic, components, imports, routes, and API calls if they are no longer used.
+Do not affect Google Authentication.
+
+Expected Login Screen:
+
+Logo
+Welcome text
+Feature cards
+Continue with Google
+Privacy text
+
+There should be no "Sign in with Replit" button anywhere in the application.
+
+2. Documents Must Show All Previously Uploaded Files
+
+Currently, the Documents page is not displaying the user's uploaded files.
+
+Fix the entire document loading flow.
+
+Requirements
+
+The Documents page must automatically load all previously uploaded documents for the currently logged-in user.
+
+This must work on:
+
+Android App
+Web App
+
+Both platforms must display the exact same list of documents.
+
+Documents to Display
+
+Show every uploaded document including:
+
+PDF
+DOC
+DOCX
+TXT
+Markdown
+Images
+Any supported file type
+
+For each document display:
+
+File Name
+File Type
+Upload Date
+File Size
+Upload Status
+Document Icon
+Open/View action
+Delete action (if already supported)
+Shared Backend
+
+Both Android and Web must read from the same backend database/storage.
+
+Do not maintain separate document lists.
+
+Use the authenticated user's ID to fetch all associated documents.
+
+Synchronization
+
+When a document is uploaded:
+
+From Android
+
+↓
+
+Immediately appears in Web.
+
+When uploaded from Web
+
+↓
+
+Immediately appears in Android.
+
+Implement automatic refresh after upload or real-time synchronization.
+
+Backend Fixes
+
+Investigate and fix:
+
+Incorrect API endpoints
+404 document requests
+Database queries
+Storage bucket lookups
+Authentication issues
+Missing user filtering
+File metadata retrieval
+
+Ensure the frontend uses the correct backend endpoints.
+
+Empty State
+
+If the user has no uploaded documents, display:
+
+No documents uploaded yet. Upload your first document to get started.
+
+Do not show:
+
+404 errors
+Failed to load files
+Raw API errors
+Performance
+
+Optimize document loading by:
+
+Lazy loading if needed
+Pagination if large lists exist
+Loading skeletons while fetching
+Caching previously fetched results
+Testing Checklist
+
+Before completing, verify:
+
+✅ Replit Sign-In is completely removed.
+✅ Only Google Sign-In remains.
+✅ No empty space or broken layout after removal.
+✅ All previously uploaded documents appear in the Web App.
+✅ The same documents appear in the Android App.
+✅ Uploading from Android instantly syncs to Web.
+✅ Uploading from Web instantly syncs to Android.
+✅ No 404 errors occur.
+✅ No duplicate documents are displayed.
+✅ Existing upload functionality continues to work.
+✅ Existing chat, search, and authentication features remain fully functional.

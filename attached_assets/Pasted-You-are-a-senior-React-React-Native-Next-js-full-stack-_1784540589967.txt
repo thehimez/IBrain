@@ -1,0 +1,372 @@
+You are a senior React/React Native/Next.js full-stack engineer.
+
+Analyze the entire project and fix the following UI, backend, mobile, and API issues without removing any existing functionality.
+
+1. Fix Mobile Safe Area / Status Bar
+
+Currently the Android status bar overlaps the app header.
+
+Requirements:
+
+Respect Android and iOS safe areas.
+Header should never render beneath:
+Status bar
+Camera notch
+Dynamic Island
+Use proper SafeArea handling.
+Add appropriate top padding.
+Ensure the header remains fixed.
+
+Expected Result:
+
+Time
+Network
+Battery
+
+must never overlap the app title.
+
+2. Fix Header Layout
+
+Current problems:
+
+Logo overlaps title.
+Conversation count is misaligned.
+Action buttons (+ and profile) are not vertically centered.
+
+Requirements:
+
+Left:
+Logo
+Center:
+Workspace title
+Conversation count
+Right:
+Add button
+Profile
+
+Everything must be perfectly aligned using Flexbox.
+
+3. Fix Documents Page
+
+Currently Documents page shows:
+
+"Failed to load files (404)"
+
+This is incorrect.
+
+Requirements:
+
+Find why API returns 404.
+Fix backend route.
+Fix frontend API endpoint.
+Fix authentication if required.
+Fix storage lookup.
+
+After fixing:
+
+The Documents page should always display all previously uploaded documents.
+
+This includes:
+
+PDFs
+Word files
+Text files
+Images
+Any supported upload
+
+If no documents exist:
+
+Display
+
+"No documents uploaded yet"
+
+instead of an error.
+
+Never show 404.
+
+4. Sync Documents Across Platforms
+
+Currently mobile and web are not synchronized.
+
+Requirements:
+
+Uploaded documents must be shared across:
+
+Mobile app
+Website
+
+Both should use the same backend database/storage.
+
+When uploading from:
+
+Mobile
+
+↓
+
+Immediately visible on Web
+
+When uploading from:
+
+Web
+
+↓
+
+Immediately visible on Mobile
+
+Implement real-time refresh or automatic reload after upload.
+
+5. Fix Chat Response Rendering
+
+Currently:
+
+When asking:
+
+"Who is Rahul Sharma?"
+
+The assistant reply breaks the UI.
+
+Problems:
+
+Response container stretches incorrectly
+Markdown breaks layout
+Text overflows
+Sources panel becomes unusable
+Message bubbles overlap
+
+Fix:
+
+Proper Markdown rendering
+Auto-height messages
+Word wrapping
+Long paragraph wrapping
+Scrollable responses
+Responsive layout
+
+The assistant message should never overflow outside its container.
+
+6. Fix Sources Panel
+
+Currently:
+
+Sources section appears empty.
+
+Cannot click.
+
+Sometimes doesn't load.
+
+Requirements:
+
+Fix API response parsing.
+Fix source rendering.
+Fix source cards.
+Make every source clickable.
+Open original URL in browser.
+Show title.
+Show favicon if available.
+Show domain.
+Show loading state.
+Show empty state if no sources.
+7. Fix Bottom Navigation While Keyboard Opens
+
+Current issue:
+
+When typing,
+
+Bottom navigation moves upward with keyboard.
+
+Requirements:
+
+Bottom navigation must stay permanently attached to bottom of screen.
+
+Keyboard should only push:
+
+Chat messages
+Input box
+
+NOT:
+
+Bottom navigation.
+
+Implement proper keyboard avoiding behavior.
+
+Expected layout:
+
+Status Bar
+
+↓
+
+Header
+
+↓
+
+Messages
+
+↓
+
+Input
+
+↓
+
+Bottom Navigation (fixed)
+
+8. Fix Chat Input
+
+Input currently shifts incorrectly.
+
+Requirements:
+
+Input should:
+
+Stay above keyboard
+Resize properly
+Never overlap messages
+Maintain send button alignment
+9. Improve Message Scrolling
+
+Requirements:
+
+Auto scroll to newest message.
+Smooth scrolling.
+No jumping.
+Maintain scroll position while streaming.
+10. Fix Streaming Responses
+
+Current issue:
+
+Streaming occasionally breaks layout.
+
+Requirements:
+
+Assistant responses should stream smoothly.
+
+No flickering.
+
+No duplicated tokens.
+
+No layout shifts.
+
+11. Fix Conversation Persistence
+
+Ensure conversations remain after:
+
+Closing app
+Refreshing page
+Logging in again
+
+Never lose conversation history.
+
+12. Fix API Errors
+
+Search entire codebase for:
+
+404
+
+500
+
+401
+
+Unhandled Promise
+
+Network Errors
+
+Fix every broken endpoint.
+
+Ensure frontend matches backend routes.
+
+13. Improve Error Handling
+
+Replace raw errors with friendly messages.
+
+Instead of:
+
+Failed to load files (404)
+
+Show:
+
+Unable to load your documents.
+Tap Retry or check your connection.
+
+Never expose raw server errors.
+
+14. Improve Loading States
+
+Add loading animations for:
+
+Documents
+Chat
+Sources
+Uploads
+
+Avoid blank screens.
+
+15. Responsive Design
+
+Verify UI on:
+
+Android phones
+
+Small phones
+
+Large phones
+
+Tablet
+
+Desktop
+
+Landscape
+
+Portrait
+
+Nothing should overlap.
+
+Nothing should overflow.
+
+16. Preserve Existing Features
+
+Do NOT remove:
+
+Authentication
+Uploads
+Conversations
+AI Chat
+Sources
+Knowledge Graph
+Search
+Profile
+Settings
+
+Only fix bugs.
+
+17. Final Verification Checklist
+
+Before completing, verify:
+
+✅ Status bar no longer overlaps
+
+✅ Header aligned
+
+✅ Documents load correctly
+
+✅ Previous uploads visible
+
+✅ Mobile & Web stay synced
+
+✅ Chat UI renders correctly
+
+✅ Markdown works
+
+✅ Sources load and are clickable
+
+✅ Keyboard no longer moves bottom navigation
+
+✅ Input stays above keyboard
+
+✅ Auto scrolling works
+
+✅ Streaming responses are stable
+
+✅ No 404 errors
+
+✅ No broken layouts
+
+✅ Responsive on all screen sizes

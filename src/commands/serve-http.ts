@@ -2561,6 +2561,29 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   const num = (v: unknown): number | null =>
     v === null || v === undefined ? null : Number(v);
 
+  // GET /api/files — list all files for the authenticated user
+  app.get('/api/files', async (req: Request, res: Response) => {
+    try {
+      const user = await requireAuth(req, res);
+      if (!user) return;
+      const files = await engine.listFilesForSource(user.sourceId);
+      res.json(files.map(f => ({
+        id: num(f.id),
+        filename: f.filename,
+        mime_type: f.mime_type,
+        size_bytes: num(f.size_bytes),
+        content_hash: f.content_hash,
+        page_slug: f.page_slug,
+        page_id: num(f.page_id),
+        uploaded_at: f.created_at,
+      })));
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('GET /api/files error:', msg);
+      res.status(500).json({ error: 'internal_error', message: msg });
+    }
+  });
+
   // GET /api/files/by-slug?slug=inbox/2026-07-18-1eb52a
   app.get('/api/files/by-slug', async (req: Request, res: Response) => {
     try {

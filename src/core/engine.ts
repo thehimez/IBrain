@@ -1457,6 +1457,7 @@ export interface BrainEngine {
   getFileByPageSlug(slug: string, sourceId: string): Promise<FileRow | null>;
   updateFilePageLink(id: number, pageId: number, pageSlug: string): Promise<void>;
   listFilesForPage(pageId: number): Promise<FileRow[]>;
+  listFilesForSource(sourceId: string, limit?: number): Promise<FileRow[]>;
 
   // ============================================================
   // v0.28: Takes (typed/weighted/attributed claims) + synthesis evidence

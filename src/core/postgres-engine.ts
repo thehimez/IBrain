@@ -3860,6 +3860,18 @@ export class PostgresEngine implements BrainEngine {
     return rows as FileRow[];
   }
 
+  async listFilesForSource(sourceId: string, limit = 200): Promise<FileRow[]> {
+    const sql = this.sql;
+    const rows = await sql<Array<FileRow>>`
+      SELECT id, source_id, page_slug, page_id, filename, storage_path, mime_type, size_bytes, content_hash, metadata, created_at
+      FROM files
+      WHERE source_id = ${sourceId}
+      ORDER BY created_at DESC
+      LIMIT ${limit}
+    `;
+    return rows as FileRow[];
+  }
+
   // Dream-cycle significance verdict cache (v0.23).
   async getDreamVerdict(filePath: string, contentHash: string): Promise<DreamVerdict | null> {
     const sql = this.sql;
