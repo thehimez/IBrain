@@ -9,30 +9,28 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
 import { Colors } from '../../constants/colors';
 
-/** Orange orb with specular highlight + explicit drop shadow (works on Android) */
+/** Orange orb with surrounding glow halo (matches web simulator on Android) */
 function Orb() {
   return (
-    <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28, height: 120 }}>
-      {/* Outer halo — wide warm-dark, very faint */}
+    <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28 }}>
+      {/* Outermost glow ring — very faint, wide */}
       <View
         style={{
           position: 'absolute',
-          bottom: -2,
-          width: 100,
-          height: 20,
-          borderRadius: 50,
-          backgroundColor: 'rgba(90,35,10,0.10)',
+          width: 136,
+          height: 136,
+          borderRadius: 68,
+          backgroundColor: 'rgba(239,85,32,0.07)',
         }}
       />
-      {/* Contact shadow — narrow, warm-dark, concentrated under the ball */}
+      {/* Middle glow ring */}
       <View
         style={{
           position: 'absolute',
-          bottom: 2,
-          width: 68,
-          height: 12,
-          borderRadius: 34,
-          backgroundColor: 'rgba(80,28,8,0.20)',
+          width: 116,
+          height: 116,
+          borderRadius: 58,
+          backgroundColor: 'rgba(239,85,32,0.10)',
         }}
       />
       {/* Main orange sphere */}
@@ -42,13 +40,11 @@ function Orb() {
           height: 96,
           borderRadius: 48,
           backgroundColor: Colors.orange,
-          // iOS shadow
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.22,
-          shadowRadius: 14,
-          // Android elevation
-          elevation: 10,
+          shadowColor: Colors.orange,
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.40,
+          shadowRadius: 16,
+          elevation: 8,
         }}
       >
         {/* Specular highlight */}
