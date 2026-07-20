@@ -106,4 +106,6 @@ GOOGLE_REDIRECT_URI = "https://5c4c8529-498e-4fca-a15c-582b9dd75a87-00-11o34mhlk
 GBRAIN_MODEL = "openai:gpt-4o"
 
 [deployment]
-deploymentTarget = "cloudrun"
+deploymentTarget = "autoscale"
+run = ["bash", "-c", "bun run src/cli.ts serve --http --port ${PORT:-8080} --bind 0.0.0.0"]
+build = ["bash", "-c", "cd frontend && bun install --frozen-lockfile && bun run build"]
