@@ -1,12 +1,20 @@
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { documentsService } from '../services/documents';
+<<<<<<< HEAD
 import type { XandaCrossFile, FileUploadEntry } from '../types';
+=======
+import type { GBrainFile, FileUploadEntry } from '../types';
+>>>>>>> origin/main
 
 export function useDocuments() {
   const queryClient = useQueryClient();
 
+<<<<<<< HEAD
   const { data: files = [], isLoading, error, refetch } = useQuery<XandaCrossFile[]>({
+=======
+  const { data: files = [], isLoading, error, refetch } = useQuery<GBrainFile[]>({
+>>>>>>> origin/main
     queryKey: ['files'],
     queryFn: () => documentsService.list(),
     retry: 2,

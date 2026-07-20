@@ -40,16 +40,22 @@ body {
 }
 
 .sidebar-logo {
+<<<<<<< HEAD
   display: flex;
   align-items: center;
   gap: 10px;
+=======
+>>>>>>> origin/main
   font-size: 18px;
   font-weight: 600;
   padding: 0 16px 24px;
   color: var(--text-primary);
 }
+<<<<<<< HEAD
 .sidebar-logo img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
 .sidebar-logo span { min-width: 0; }
+=======
+>>>>>>> origin/main
 
 .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
 
@@ -348,8 +354,12 @@ label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
   background: var(--bg-primary);
 }
 .login-box { text-align: left; width: 340px; }
+<<<<<<< HEAD
 .login-logo { display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 32px; font-weight: 600; margin-bottom: 32px; }
 .login-logo img { width: 96px; height: 96px; border-radius: 20px; object-fit: cover; }
+=======
+.login-logo { font-size: 32px; font-weight: 600; margin-bottom: 32px; }
+>>>>>>> origin/main
 .login-hint { color: var(--text-muted); font-size: 12px; margin-top: 12px; }
 .login-error { color: var(--error); font-size: 13px; margin-top: 8px; }
 

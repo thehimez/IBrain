@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 # XandaCross Mobile
 
 React Native + Expo app for XandaCross — feature-equivalent to the web frontend.
+=======
+# GBrain Mobile
+
+React Native + Expo app for GBrain — feature-equivalent to the web frontend.
+>>>>>>> origin/main
 
 ## Stack
 
@@ -22,7 +28,11 @@ React Native + Expo app for XandaCross — feature-equivalent to the web fronten
    EXPO_PUBLIC_API_URL=https://YOUR_REPLIT_DEV_DOMAIN
    ```
    The mobile app points at the Vite dev server (port 5000) which proxies `/api/*`
+<<<<<<< HEAD
    to the XandaCross API on port 3001.
+=======
+   to the GBrain API on port 3001.
+>>>>>>> origin/main
 
 2. **Install and start:**
    ```bash
@@ -37,7 +47,11 @@ React Native + Expo app for XandaCross — feature-equivalent to the web fronten
 
 - **iOS** — Google OAuth via `openAuthSessionAsync` uses `ASWebAuthenticationSession`,
   which shares cookies with `URLSession`. This means session cookies set by the
+<<<<<<< HEAD
   XandaCross backend flow automatically into `fetch()` calls. Works out of the box.
+=======
+  GBrain backend flow automatically into `fetch()` calls. Works out of the box.
+>>>>>>> origin/main
 - **Android** — Chrome Custom Tabs do NOT share cookies with the native network
   stack. For a production Android build, create a development build with
   `react-native-webview` and `@react-native-cookies/cookies` and swap the auth

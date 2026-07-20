@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "xandacross-mobile",
+=======
+  "name": "gbrain-mobile",
+>>>>>>> origin/main
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
@@ -28,7 +32,11 @@
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.4",
     "expo-web-browser": "~14.0.1",
+<<<<<<< HEAD
     "nativewind": "4.0.36",
+=======
+    "nativewind": "^4.0.36",
+>>>>>>> origin/main
     "react": "18.3.1",
     "react-native": "0.76.5",
     "react-native-gesture-handler": "~2.21.2",

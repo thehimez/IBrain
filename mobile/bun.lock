@@ -3,7 +3,11 @@
   "configVersion": 1,
   "workspaces": {
     "": {
+<<<<<<< HEAD
       "name": "xandacross-mobile",
+=======
+      "name": "gbrain-mobile",
+>>>>>>> origin/main
       "dependencies": {
         "@expo/ngrok": "^4.0.3",
         "@expo/vector-icons": "^14.0.4",

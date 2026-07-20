@@ -1,8 +1,14 @@
 import * as WebBrowser from 'expo-web-browser';
+<<<<<<< HEAD
 import * as Linking from 'expo-linking';
 import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
 import { apiGet } from './api';
 import { saveUser, loadUser, clearUser, saveSessionCookie } from '../utils/storage';
+=======
+import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
+import { apiGet } from './api';
+import { saveUser, loadUser, clearUser } from '../utils/storage';
+>>>>>>> origin/main
 import type { AuthUser } from '../types';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -21,6 +27,7 @@ export async function fetchMe(): Promise<AuthUser | null> {
   }
 }
 
+<<<<<<< HEAD
 /** Complete the native OAuth callback using its short-lived, single-use code. */
 export async function completeMobileLogin(code: string): Promise<AuthUser | null> {
   const res = await fetch(`${API_BASE_URL}/api/auth/mobile-session`, {
@@ -35,6 +42,8 @@ export async function completeMobileLogin(code: string): Promise<AuthUser | null
   return fetchMe();
 }
 
+=======
+>>>>>>> origin/main
 /**
  * Begin Google OAuth flow using the system browser.
  *
@@ -46,6 +55,7 @@ export async function completeMobileLogin(code: string): Promise<AuthUser | null
  * After the browser closes, we call /api/auth/me to confirm the session.
  */
 export async function loginWithGoogle(): Promise<AuthUser | null> {
+<<<<<<< HEAD
   const returnUrl = Linking.createURL('auth');
   console.log("RETURN URL:", returnUrl);
   const authUrl = `${API_BASE_URL}${API_ENDPOINTS.googleAuth}?mobile=1&mobile_return=${encodeURIComponent(returnUrl)}`;
@@ -56,6 +66,17 @@ export async function loginWithGoogle(): Promise<AuthUser | null> {
     const code = new URL(result.url).searchParams.get('code');
     if (!code) return null;
     return completeMobileLogin(code);
+=======
+  const authUrl = `${API_BASE_URL}${API_ENDPOINTS.googleAuth}`;
+
+  const result = await WebBrowser.openAuthSessionAsync(authUrl, 'gbrain://');
+
+  // Regardless of result type, check if a session was established
+  if (result.type === 'success' || result.type === 'dismiss') {
+    // Give the server a moment to finalize the session
+    await new Promise(r => setTimeout(r, 300));
+    return fetchMe();
+>>>>>>> origin/main
   }
 
   return null;
@@ -67,7 +88,11 @@ export async function loginWithGoogle(): Promise<AuthUser | null> {
  */
 export async function loginWithReplit(devDomain: string): Promise<AuthUser | null> {
   const replitUrl = `https://replit.com/auth_with_repl_site?domain=${devDomain}`;
+<<<<<<< HEAD
   const result = await WebBrowser.openAuthSessionAsync(replitUrl, 'xandacross://');
+=======
+  const result = await WebBrowser.openAuthSessionAsync(replitUrl, 'gbrain://');
+>>>>>>> origin/main
 
   if (result.type === 'success' || result.type === 'dismiss') {
     await new Promise(r => setTimeout(r, 300));

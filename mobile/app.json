@@ -1,5 +1,6 @@
 {
   "expo": {
+<<<<<<< HEAD
     "name": "XandaCross",
     "slug": "xandacross-mobile",
     "version": "1.0.0",
@@ -9,11 +10,23 @@
     "scheme": "xandacross",
     "splash": {
       "image": "./assets/xandacross-logo.png",
+=======
+    "name": "GBrain",
+    "slug": "gbrain-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "gbrain",
+    "splash": {
+      "image": "./assets/splash.png",
+>>>>>>> origin/main
       "resizeMode": "contain",
       "backgroundColor": "#0f172a"
     },
     "ios": {
       "supportsTablet": true,
+<<<<<<< HEAD
       "bundleIdentifier": "com.xandacross.mobile"
     },
     "android": {
@@ -22,6 +35,16 @@
         "backgroundColor": "#0f172a"
       },
       "package": "com.xandacross.mobile"
+=======
+      "bundleIdentifier": "com.gbrain.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0f172a"
+      },
+      "package": "com.gbrain.mobile"
+>>>>>>> origin/main
     },
     "web": {
       "bundler": "metro",
@@ -34,7 +57,11 @@
       [
         "expo-splash-screen",
         {
+<<<<<<< HEAD
           "image": "./assets/xandacross-logo.png",
+=======
+          "image": "./assets/splash.png",
+>>>>>>> origin/main
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#0f172a"

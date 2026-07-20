@@ -58,7 +58,11 @@ export interface BrainStatus {
 
 // ─── Documents ─────────────────────────────────────────────────────────────────
 
+<<<<<<< HEAD
 export interface XandaCrossFile {
+=======
+export interface GBrainFile {
+>>>>>>> origin/main
   id: string;
   source_id: string;
   page_id: string | null;

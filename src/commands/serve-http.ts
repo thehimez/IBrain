@@ -55,7 +55,10 @@ import { VERSION } from '../version.ts';
 import * as db from '../core/db.ts';
 import { sqlQueryForEngine, executeRawJsonb } from '../core/sql-query.ts';
 import { MinionQueue } from '../core/minions/queue.ts';
+<<<<<<< HEAD
 import { MinionWorker } from '../core/minions/worker.ts';
+=======
+>>>>>>> origin/main
 import {
   computeContentHash,
   validateIngestionEvent,
@@ -70,6 +73,7 @@ import {
  * 3s leaves 2s of headroom for TCP, response framing, and clock skew.
  */
 export const HEALTH_TIMEOUT_MS = 3000;
+<<<<<<< HEAD
 const MOBILE_RETURN_COOKIE = 'gbrain_mobile_return';
 const MOBILE_RETURN_URL = 'xandacross://auth';
 const MOBILE_AUTH_CODE_TTL_MS = 60_000;
@@ -85,6 +89,8 @@ function getAllowedMobileReturnUrl(value: unknown): string | null {
   }
   return null;
 }
+=======
+>>>>>>> origin/main
 
 /**
  * v0.36.1.x #1024: bootstrap token resolution.
@@ -599,10 +605,13 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     isTty: process.stderr.isTTY === true,
   });
   const adminSessions = new Map<string, number>(); // sessionId → expiresAt
+<<<<<<< HEAD
   // Native Android browsers do not share the web session cookie with Expo.
   // A short-lived, single-use code lets the app claim its session after the
   // OAuth callback without placing the bearer session token in a deep link.
   const mobileAuthCodes = new Map<string, { token: string; expiresAt: number }>();
+=======
+>>>>>>> origin/main
 
   // SSE clients for live activity feed
   const sseClients = new Set<express.Response>();
@@ -671,8 +680,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
 
   // GET /api/auth/google — start Google OAuth 2.0 authorization code flow
   app.get('/api/auth/google', (req: Request, res: Response) => {
+<<<<<<< HEAD
     console.log("CLIENT ID =", process.env.GOOGLE_CLIENT_ID);
     console.log("CLIENT SECRET =", process.env.GOOGLE_CLIENT_SECRET);
+=======
+>>>>>>> origin/main
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
       res.status(503).send(
         '<h3 style="font-family:sans-serif;padding:2rem">Google login is not configured.<br>' +
@@ -682,6 +694,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     }
     const state       = generateOAuthState();
     const redirectUri = getGoogleRedirectUri(req as any);
+<<<<<<< HEAD
     if (req.query.mobile === '1') {
       const mobileReturnUrl = getAllowedMobileReturnUrl(req.query.mobile_return) ?? MOBILE_RETURN_URL;
       res.cookie(MOBILE_RETURN_COOKIE, mobileReturnUrl, {
@@ -692,6 +705,8 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
         path: '/',
       });
     }
+=======
+>>>>>>> origin/main
     const authUrl     = buildGoogleAuthUrl(state, redirectUri);
     // Short-lived CSRF state cookie — 10 min, cleared after callback
     res.cookie(STATE_COOKIE, state, {
@@ -707,11 +722,14 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   // GET /api/auth/google/callback — exchange code, upsert user, set session cookie
   app.get('/api/auth/google/callback', async (req: Request, res: Response) => {
     try {
+<<<<<<< HEAD
       console.log("========== CALLBACK ==========");
       console.log("Host:", req.headers.host);
       console.log("Cookie header:", req.headers.cookie);
       console.log("Parsed cookies:", req.cookies);
       console.log("Query:", req.query);
+=======
+>>>>>>> origin/main
       const { code, state, error } = req.query as Record<string, string>;
 
       if (error) {
@@ -751,6 +769,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
         userAgent: String(req.headers['user-agent'] ?? ''),
       });
       res.cookie(COOKIE_NAME, token, sessionCookieOptions(req));
+<<<<<<< HEAD
       const mobileReturn = (req.cookies as Record<string, string>)?.[MOBILE_RETURN_COOKIE];
       res.clearCookie(MOBILE_RETURN_COOKIE, { path: '/' });
       const mobileReturnUrl = getAllowedMobileReturnUrl(mobileReturn);
@@ -761,6 +780,9 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
         res.redirect(`${mobileReturnUrl}${separator}code=${encodeURIComponent(code)}`);
         return;
       }
+=======
+
+>>>>>>> origin/main
       res.redirect('/');
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -769,6 +791,7 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     }
   });
 
+<<<<<<< HEAD
   // POST /api/auth/mobile-session — exchange a one-time native OAuth code
   // for the session token that the Expo app stores in SecureStore.
   app.post('/api/auth/mobile-session', express.json(), (req: Request, res: Response) => {
@@ -782,6 +805,8 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     res.json({ sessionToken: entry.token });
   });
 
+=======
+>>>>>>> origin/main
   // POST /api/auth/logout — delete session + clear cookie
   app.post('/api/auth/logout', async (req: Request, res: Response) => {
     try {
@@ -806,7 +831,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
         connected: true,
         name: 'Industrial Knowledge Brain',
         pageCount: (stats as any).page_count ?? (stats as any).pages ?? (stats as any).total_pages ?? 0,
+<<<<<<< HEAD
         engine: config?.engine ?? 'pglite',
+=======
+        engine: config.engine ?? 'pglite',
+>>>>>>> origin/main
         version: (await import('../version.ts')).VERSION,
       });
     } catch (err) {
@@ -1134,7 +1163,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     // users_admin via /.well-known/oauth-authorization-server. The legacy
     // ['read','write','admin'] list left those new scopes invisible.
     scopesSupported: [...ALLOWED_SCOPES_LIST],
+<<<<<<< HEAD
     resourceName: 'XandaCross MCP Server',
+=======
+    resourceName: 'GBrain MCP Server',
+>>>>>>> origin/main
   };
 
   // F12: DCR disable lives on the provider's constructor option above. The
@@ -1280,7 +1313,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     if (!isValid) {
       res.status(401).send(`<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<<<<<<< HEAD
 <title>XandaCross</title>
+=======
+<title>GBrain</title>
+>>>>>>> origin/main
 <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;display:flex;align-items:center;justify-content:center}
 .box{max-width:400px;padding:32px;text-align:left}
 .logo{font-size:28px;font-weight:600;margin-bottom:24px}
@@ -1289,10 +1326,17 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
 .hint b{color:#e0e0e0}
 .prompt{background:rgba(0,0,0,0.3);border-radius:6px;padding:8px 12px;margin-top:8px;font-family:monospace;font-size:12px;color:#88aaff}
 </style></head><body><div class="box">
+<<<<<<< HEAD
 <div class="logo">XandaCross</div>
 <div class="msg">⚠️ This admin link has expired, was already used, or the server has restarted.</div>
 <div class="hint"><b>Get a fresh link from your AI agent:</b>
 <div class="prompt">&ldquo;Give me the XandaCross admin login link&rdquo;</div>
+=======
+<div class="logo">GBrain</div>
+<div class="msg">⚠️ This admin link has expired, was already used, or the server has restarted.</div>
+<div class="hint"><b>Get a fresh link from your AI agent:</b>
+<div class="prompt">&ldquo;Give me the GBrain admin login link&rdquo;</div>
+>>>>>>> origin/main
 </div></div></body></html>`);
       return;
     }
@@ -2481,16 +2525,21 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
 
       const job = await ingestQueue.add(
         'ingest_capture',
+<<<<<<< HEAD
         {
           event,
           file_id: fileId,
         },
+=======
+        { event, file_id: fileId },
+>>>>>>> origin/main
         {
           idempotency_key: `upload:${uploader.id}:${contentHash}`,
           maxWaiting: 50,
         },
       );
 
+<<<<<<< HEAD
       // PGLite has an exclusive database lock, so it cannot run the separate
       // `jobs work` daemon used by Postgres deployments. Run this one upload
       // through an in-process worker before responding instead. The queue
@@ -2523,6 +2572,8 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
         }
       }
 
+=======
+>>>>>>> origin/main
       res.status(202).json({
         job_id: job.id,
         file_id: fileId,
@@ -2598,7 +2649,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     try {
       const user = await requireAuth(req, res);
       if (!user) return;
+<<<<<<< HEAD
       const id = parseInt(String(req.params.id), 10);
+=======
+      const id = parseInt(req.params.id, 10);
+>>>>>>> origin/main
       if (isNaN(id)) {
         res.status(400).json({ error: 'invalid id' });
         return;
@@ -2633,7 +2688,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
     try {
       const user = await requireAuth(req, res);
       if (!user) return;
+<<<<<<< HEAD
       const id = parseInt(String(req.params.id), 10);
+=======
+      const id = parseInt(req.params.id, 10);
+>>>>>>> origin/main
       if (isNaN(id)) {
         res.status(400).json({ error: 'invalid id' });
         return;
@@ -2820,7 +2879,11 @@ export async function runServeHttp(engine: BrainEngine, options: ServeHttpOption
   app.listen(port, bind, () => {
     console.error(`
 ╔══════════════════════════════════════════════════════╗
+<<<<<<< HEAD
 ║  XandaCross MCP Server v${VERSION.padEnd(33)}║
+=======
+║  GBrain MCP Server v${VERSION.padEnd(37)}║
+>>>>>>> origin/main
 ╠══════════════════════════════════════════════════════╣
 ║  Port:      ${String(port).padEnd(40)}║
 ║  Bind:      ${bind.padEnd(40)}║

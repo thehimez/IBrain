@@ -3,7 +3,11 @@
   "configVersion": 1,
   "workspaces": {
     "": {
+<<<<<<< HEAD
       "name": "xandacross-frontend",
+=======
+      "name": "gbrain-frontend",
+>>>>>>> origin/main
       "dependencies": {
         "date-fns": "^3.6.0",
         "lucide-react": "^0.447.0",

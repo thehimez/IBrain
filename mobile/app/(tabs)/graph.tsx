@@ -114,7 +114,11 @@ export default function GraphScreen() {
         <EmptyState
           icon={<Text style={{ fontSize: 28 }}>🕸️</Text>}
           title="No graph data yet"
+<<<<<<< HEAD
           description="Upload documents and XandaCross will extract entities and relationships to populate your knowledge graph."
+=======
+          description="Upload documents and GBrain will extract entities and relationships to populate your knowledge graph."
+>>>>>>> origin/main
         />
       ) : (
         <ScrollView style={{ flex: 1 }} scrollEnabled={false}>

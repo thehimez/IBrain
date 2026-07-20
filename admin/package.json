@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "xandacross-admin",
+=======
+  "name": "gbrain-admin",
+>>>>>>> origin/main
   "private": true,
   "type": "module",
   "scripts": {

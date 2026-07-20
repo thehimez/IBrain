@@ -10,8 +10,14 @@
     "esModuleInterop": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
+<<<<<<< HEAD
     "paths": {
       "@/*": ["./src/*"]
+=======
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+>>>>>>> origin/main
     }
   },
   "include": ["src", "test"]

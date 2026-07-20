@@ -48,10 +48,14 @@ export function App() {
   return (
     <div className="app">
       <nav className="sidebar">
+<<<<<<< HEAD
         <div className="sidebar-logo">
           <img src="/admin/assets/xandacross-logo.png" alt="" />
           <span>XandaCross</span>
         </div>
+=======
+        <div className="sidebar-logo">GBrain</div>
+>>>>>>> origin/main
         <div className="sidebar-nav">
           <a className={`nav-item ${page === 'dashboard' ? 'active' : ''}`}
              onClick={() => navigate('dashboard')}>Dashboard</a>

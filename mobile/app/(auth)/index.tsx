@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import {
+<<<<<<< HEAD
   View, Text, Image, TouchableOpacity, ActivityIndicator,
+=======
+  View, Text, TouchableOpacity, ActivityIndicator,
+>>>>>>> origin/main
   SafeAreaView, ScrollView,
 } from 'react-native';
 import { Redirect } from 'expo-router';
@@ -25,17 +29,39 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* Logo */}
+<<<<<<< HEAD
         <Image
           source={require('../../assets/xandacross-logo.png')}
           accessibilityLabel="XandaCross logo"
           style={{ width: 112, height: 112, borderRadius: 24, marginBottom: 24 }}
         />
+=======
+        <View
+          style={{
+            width: 72,
+            height: 72,
+            borderRadius: 20,
+            backgroundColor: Colors.accent.bg,
+            borderWidth: 1,
+            borderColor: Colors.accent.border,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 24,
+          }}
+        >
+          <Text style={{ fontSize: 36 }}>🧠</Text>
+        </View>
+>>>>>>> origin/main
 
         {/* Title */}
         <Text
           style={{ fontSize: 28, fontWeight: '700', color: Colors.text.primary, textAlign: 'center', marginBottom: 8 }}
         >
+<<<<<<< HEAD
           XandaCross
+=======
+          GBrain
+>>>>>>> origin/main
         </Text>
         <Text
           style={{ fontSize: 15, color: Colors.text.secondary, textAlign: 'center', lineHeight: 22, marginBottom: 40 }}

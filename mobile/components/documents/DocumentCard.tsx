@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Colors } from '../../constants/colors';
+<<<<<<< HEAD
 import type { XandaCrossFile } from '../../types';
+=======
+import type { GBrainFile } from '../../types';
+>>>>>>> origin/main
 import { formatBytes, formatRelativeTime } from '../../utils/format';
 
 const EXT_COLORS: Record<string, string> = {
@@ -21,7 +25,11 @@ function extFromMime(mime: string, filename: string): string {
 }
 
 interface Props {
+<<<<<<< HEAD
   file: XandaCrossFile;
+=======
+  file: GBrainFile;
+>>>>>>> origin/main
   onPress: () => void;
 }
 
