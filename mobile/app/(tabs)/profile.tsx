@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
-  View, Text, SafeAreaView, ScrollView, TouchableOpacity, Alert,
+  View, Text, ScrollView, TouchableOpacity, Alert,
   ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../hooks/useAuth';
 import { brainService } from '../../services/chat';

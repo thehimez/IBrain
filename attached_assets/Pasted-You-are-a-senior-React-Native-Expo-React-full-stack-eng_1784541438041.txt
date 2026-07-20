@@ -1,0 +1,212 @@
+You are a senior React Native + Expo + React full-stack engineer.
+
+The previous fixes did not solve the problems. The application still has fundamental layout issues. Do not add more padding or temporary CSS fixes. Instead, identify and fix the root cause.
+
+Issue 1: Header Overlaps Android Status Bar
+
+The header is still rendering underneath the Android status bar.
+
+The battery icon, network icons, and time overlap the app header.
+
+This means the app is not respecting the Android safe area.
+
+Fix the root cause
+Audit the entire app layout.
+Find every screen that renders a custom header.
+Ensure every screen is wrapped correctly in SafeAreaProvider and SafeAreaView.
+Do not rely on hardcoded paddingTop.
+Use useSafeAreaInsets() where appropriate.
+Verify Expo StatusBar configuration.
+Ensure the header starts below the Android status bar.
+Test on Android devices with notches and without notches.
+
+Expected result:
+
+Status Bar
+
+Time   Battery
+
+---------------------
+
+App Header
+
+Logo     Title
+
+---------------------
+
+Screen Content
+
+Nothing should overlap.
+
+Issue 2: Chat Layout is Completely Broken
+
+The chat screen is still unusable.
+
+Current issues:
+
+Assistant response is clipped.
+Response renders outside the message area.
+Sources panel is stretched vertically.
+Sources overlap messages.
+Blank white area occupies most of the screen.
+Messages do not expand correctly.
+Conversation cannot be read.
+
+This is not acceptable.
+
+Find the root cause
+
+Inspect:
+
+ChatScreen
+MessageList
+MessageBubble
+SourcesPanel
+Citation components
+Markdown renderer
+ScrollView / FlatList
+Flexbox layout
+Parent containers
+
+One or more containers likely has incorrect:
+
+height
+width
+flex
+position: absolute
+overflow
+zIndex
+
+Find the incorrect container and fix it.
+
+Do not hide the issue with additional padding.
+
+Expected Chat Layout
+-------------------------
+Header
+-------------------------
+
+User Message
+
+Assistant Message
+
+Sources
+
+User Message
+
+Assistant Message
+
+-------------------------
+
+Input Box
+
+-------------------------
+
+Bottom Navigation
+
+Everything should remain inside the screen.
+
+No clipping.
+
+No overlapping.
+
+No blank white columns.
+
+Issue 3: Sources Panel
+
+The Sources section is still broken.
+
+Instead of showing source cards, it displays a giant empty grey rectangle.
+
+Fix the rendering logic.
+
+Requirements:
+
+Sources appear below each assistant response.
+Cards auto-size to their content.
+No fixed heights.
+No oversized container.
+Clickable source cards.
+Proper spacing.
+Markdown citations render correctly.
+
+If there are no sources:
+
+Display:
+
+No sources available.
+
+Do not render an empty panel.
+
+Issue 4: Message Rendering
+
+Assistant messages must:
+
+Wrap text correctly.
+Support Markdown.
+Support long paragraphs.
+Support code blocks.
+Support citations.
+Support lists.
+Auto-expand vertically.
+Never overflow outside the container.
+Issue 5: Scroll Behavior
+
+The chat must:
+
+Use a proper FlatList or ScrollView.
+Scroll naturally.
+Auto-scroll to the latest message.
+Never create giant blank areas.
+Never cut off messages.
+Issue 6: Layout Audit
+
+Audit every screen for:
+
+position: absolute
+Fixed heights
+Fixed widths
+Incorrect flex values
+Overflow hidden
+Incorrect zIndex
+Nested ScrollViews
+Nested SafeAreaViews
+
+Replace problematic layouts with responsive Flexbox layouts.
+
+Required Debugging
+
+Do not guess.
+
+Inspect:
+
+Chat screen component hierarchy
+Header component
+SafeArea configuration
+Navigation container
+Message rendering components
+Source rendering components
+Parent layout containers
+
+Identify the exact file and line causing each issue.
+
+Deliverables
+
+When complete, provide:
+
+Every file modified.
+Root cause of the Safe Area issue.
+Root cause of the Chat layout issue.
+Root cause of the Sources panel issue.
+Root cause of the blank white area.
+Why the previous fix failed.
+Why this fix is the correct architectural solution.
+
+Do not mark this task complete until the Android screenshots show:
+
+✅ Header below the status bar (no overlap with battery/time/icons)
+✅ Chat messages fully visible
+✅ Sources rendered normally
+✅ No oversized blank areas
+✅ Responsive layout on both Android and Web
+✅ No hardcoded padding or CSS hacks used to mask the issue

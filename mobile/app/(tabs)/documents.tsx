@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, SafeAreaView,
+  View, Text, FlatList, TouchableOpacity,
   Modal, ScrollView, Alert, ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import * as Haptics from 'expo-haptics';

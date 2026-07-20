@@ -1,8 +1,9 @@
 import React from 'react';
 import {
   View, Text, TouchableOpacity, ActivityIndicator,
-  SafeAreaView, StatusBar, Dimensions,
+  Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Redirect } from 'expo-router';
 import { useAuth } from '../../hooks/useAuth';
 import { Colors } from '../../constants/colors';

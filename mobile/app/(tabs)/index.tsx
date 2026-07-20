@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
-  SafeAreaView, Modal, ActivityIndicator,
+  Modal, ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../hooks/useAuth';
 import { useChat } from '../../hooks/useChat';
 import { Colors } from '../../constants/colors';

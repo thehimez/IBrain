@@ -27,18 +27,17 @@ export default function ChatBubble({ message }: Props) {
   };
 
   return (
-    <View
-      style={{
+    // Outer wrapper — full width, no flex constraints that could bleed into FlatList
+    <View style={{ paddingHorizontal: 16, paddingVertical: 6 }}>
+
+      {/* Row: avatar + bubble */}
+      <View style={{
         flexDirection: isUser ? 'row-reverse' : 'row',
-        gap: 10,
-        paddingHorizontal: 16,
-        paddingVertical: 6,
         alignItems: 'flex-end',
-      }}
-    >
-      {/* Avatar dot */}
-      <View
-        style={{
+        gap: 10,
+      }}>
+        {/* Avatar dot */}
+        <View style={{
           width: 28,
           height: 28,
           borderRadius: 14,
@@ -48,60 +47,65 @@ export default function ChatBubble({ message }: Props) {
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
-          marginBottom: 2,
-        }}
-      >
-        <Text style={{ fontSize: 12 }}>{isUser ? '●' : '✦'}</Text>
-      </View>
+        }}>
+          <Text style={{ fontSize: 12 }}>{isUser ? '●' : '✦'}</Text>
+        </View>
 
-      {/* Bubble */}
-      <View
-        style={{
+        {/* Bubble column — timestamp + content */}
+        <View style={{
           maxWidth: '80%',
           alignItems: isUser ? 'flex-end' : 'flex-start',
           gap: 4,
-        }}
-      >
-        {/* Timestamp */}
-        <Text style={{ fontSize: 10, color: Colors.text.muted, marginHorizontal: 4 }}>
-          {copied ? '✓ Copied' : formatRelativeTime(message.timestamp)}
-        </Text>
+        }}>
+          {/* Timestamp */}
+          <Text style={{ fontSize: 10, color: Colors.text.muted, marginHorizontal: 4 }}>
+            {copied ? '✓ Copied' : formatRelativeTime(message.timestamp)}
+          </Text>
 
-        {/* Content bubble */}
-        <TouchableOpacity
-          onLongPress={handleLongPress}
-          activeOpacity={0.88}
-          style={{
-            paddingHorizontal: 14,
-            paddingVertical: 10,
-            borderRadius: 18,
-            borderTopRightRadius: isUser ? 4 : 18,
-            borderTopLeftRadius: isUser ? 18 : 4,
-            backgroundColor: isUser ? Colors.text.primary : Colors.bg.secondary,
-            borderWidth: isUser ? 0 : 1,
-            borderColor: Colors.border.default,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.06,
-            shadowRadius: 4,
-            elevation: 1,
-          }}
-        >
-          {message.isStreaming && !message.content ? (
-            <TypingIndicator />
-          ) : (
-            <MarkdownRenderer
-              content={message.content}
-              textStyle={isUser ? { color: '#ffffff' } : { color: Colors.text.primary }}
-            />
-          )}
-        </TouchableOpacity>
-
-        {/* Source chips */}
-        {!message.isStreaming && message.citations && message.citations.length > 0 && (
-          <SourceChips citations={message.citations} gaps={message.gaps} />
-        )}
+          {/* Content bubble */}
+          <TouchableOpacity
+            onLongPress={handleLongPress}
+            activeOpacity={0.88}
+            style={{
+              paddingHorizontal: 14,
+              paddingVertical: 10,
+              borderRadius: 18,
+              borderTopRightRadius: isUser ? 4 : 18,
+              borderTopLeftRadius: isUser ? 18 : 4,
+              backgroundColor: isUser ? Colors.text.primary : Colors.bg.secondary,
+              borderWidth: isUser ? 0 : 1,
+              borderColor: Colors.border.default,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.06,
+              shadowRadius: 4,
+              elevation: 1,
+            }}
+          >
+            {message.isStreaming && !message.content ? (
+              <TypingIndicator />
+            ) : (
+              <MarkdownRenderer
+                content={message.content}
+                textStyle={isUser ? { color: '#ffffff' } : { color: Colors.text.primary }}
+              />
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
+
+      {/* Source chips — outside the avatar+bubble row so they are NOT
+          constrained to maxWidth: 80% and cannot stretch the row height */}
+      {!message.isStreaming && message.citations && message.citations.length > 0 && (
+        <View style={{
+          // Indent to align with bubble (avatar width 28 + gap 10)
+          marginLeft: isUser ? 0 : 38,
+          marginRight: isUser ? 38 : 0,
+          marginTop: 4,
+        }}>
+          <SourceChips citations={message.citations} gaps={message.gaps} />
+        </View>
+      )}
     </View>
   );
 }

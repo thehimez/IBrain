@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {
-  View, Text, SafeAreaView, ScrollView, TouchableOpacity, Modal,
+  View, Text, ScrollView, TouchableOpacity, Modal,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGraph } from '../../hooks/useGraph';
 import { Colors } from '../../constants/colors';
 import GraphCanvas from '../../components/graph/GraphCanvas';
