@@ -50,4 +50,22 @@ export const documentsService = {
     if (!res.ok) throw new Error(`Failed to load file (${res.status})`);
     return res.json() as Promise<XandaCrossFile>;
   },
+
+  /** Resolve a citation page_slug → full file record with content */
+  async getBySlug(slug: string): Promise<XandaCrossFile> {
+    const cookie = await loadSessionCookie();
+    const headers: Record<string, string> = {};
+    if (cookie) headers['Cookie'] = cookie;
+
+    // Step 1: resolve slug → id + filename
+    const slugRes = await fetch(
+      `${API_BASE_URL}${API_ENDPOINTS.files}/by-slug?slug=${encodeURIComponent(slug)}`,
+      { headers, credentials: 'include' },
+    );
+    if (!slugRes.ok) throw new Error(`File not found for slug: ${slug}`);
+    const meta = await slugRes.json() as { id: string; filename: string };
+
+    // Step 2: fetch full record with content
+    return documentsService.getContent(String(meta.id));
+  },
 };
