@@ -90,18 +90,6 @@ export default function LoginScreen({ onLogin, onLoginReplit }: Props) {
           <span className="text-[15px]">Continue with Google</span>
         </button>
 
-        {/* Secondary: Replit */}
-        {onLoginReplit && (
-          <button
-            onClick={onLoginReplit}
-            className="w-full flex items-center justify-center gap-3 mt-3 bg-navy-800 hover:bg-navy-700 text-slate-600 hover:text-slate-800 font-medium py-2.5 px-6 rounded-xl transition-all duration-150 border border-navy-600 text-sm"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
-            Sign in with Replit
-          </button>
-        )}
 
         <p className="text-center text-xs text-slate-400 mt-4">
           Your knowledge is private and only visible to you.

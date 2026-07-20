@@ -77,7 +77,7 @@ function GoogleBadge() {
 }
 
 export default function LoginScreen() {
-  const { user, isLoading, loginWithGoogle, loginWithReplit } = useAuth();
+  const { user, isLoading, loginWithGoogle } = useAuth();
 
   if (user) return <Redirect href="/(tabs)" />;
 
@@ -173,30 +173,6 @@ export default function LoginScreen() {
                 </Text>
               </>
             )}
-          </TouchableOpacity>
-
-          {/* Secondary — Replit */}
-          <TouchableOpacity
-            onPress={loginWithReplit}
-            disabled={isLoading}
-            activeOpacity={0.82}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 12,
-              height: 52,
-              borderRadius: 16,
-              backgroundColor: Colors.bg.secondary,
-              borderWidth: 1.5,
-              borderColor: Colors.border.default,
-              opacity: isLoading ? 0.6 : 1,
-            }}
-          >
-            <Text style={{ fontSize: 16, color: Colors.text.secondary }}>⚡</Text>
-            <Text style={{ fontSize: 15, fontWeight: '500', color: Colors.text.secondary }}>
-              Sign in with Replit
-            </Text>
           </TouchableOpacity>
 
           <Text style={{ fontSize: 11, color: Colors.text.muted, textAlign: 'center', marginTop: 4 }}>
