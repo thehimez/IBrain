@@ -109,3 +109,7 @@ GBRAIN_MODEL = "openai:gpt-4o"
 deploymentTarget = "autoscale"
 run = ["bash", "-c", "bun run src/cli.ts serve --http --port ${PORT:-8080} --bind 0.0.0.0"]
 build = ["bash", "-c", "cd frontend && bun install --frozen-lockfile && bun run build"]
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 180000
