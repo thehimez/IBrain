@@ -13,24 +13,15 @@ import { Colors } from '../../constants/colors';
 function Orb() {
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28 }}>
-      {/* Outermost glow ring — very faint, wide */}
+      {/* Single soft glow — slightly larger than ball, offset down to match CSS shadow y:8 */}
       <View
         style={{
           position: 'absolute',
-          width: 136,
-          height: 136,
-          borderRadius: 68,
-          backgroundColor: 'rgba(239,85,32,0.07)',
-        }}
-      />
-      {/* Middle glow ring */}
-      <View
-        style={{
-          position: 'absolute',
-          width: 116,
-          height: 116,
-          borderRadius: 58,
-          backgroundColor: 'rgba(239,85,32,0.10)',
+          top: 10,
+          width: 108,
+          height: 108,
+          borderRadius: 54,
+          backgroundColor: 'rgba(239,85,32,0.09)',
         }}
       />
       {/* Main orange sphere */}
