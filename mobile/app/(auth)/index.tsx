@@ -13,39 +13,30 @@ import { Colors } from '../../constants/colors';
 function Orb() {
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 28 }}>
-      {/* Orange glow behind sphere — simulates box-shadow: 0 8px 24px rgba(239,85,32,0.40) */}
+      {/* Teal ground oval — web's `absolute bottom-0 w-16 h-5 rounded-full bg-accent-light/20 blur-sm` */}
       <View
         style={{
           position: 'absolute',
-          top: 8,            // matches shadowOffset y:8
-          width: 112,
-          height: 112,
-          borderRadius: 56,
-          backgroundColor: 'rgba(239,85,32,0.18)',
-        }}
-      />
-      {/* Teal ground oval — matches web's bg-accent-light/20 blur-sm ellipse */}
-      <View
-        style={{
-          position: 'absolute',
-          bottom: -6,
+          bottom: -4,
           width: 64,
-          height: 18,
+          height: 16,
           borderRadius: 32,
-          backgroundColor: 'rgba(73,126,126,0.22)',
+          backgroundColor: 'rgba(73,126,126,0.18)',
         }}
       />
-      {/* Main orange sphere */}
+      {/* Main orange sphere — elevation gives Android's natural shadow */}
       <View
         style={{
           width: 96,
           height: 96,
           borderRadius: 48,
           backgroundColor: Colors.orange,
-          shadowColor: Colors.orange,
+          // iOS: matches web box-shadow 0 8px 24px rgba(239,85,32,0.40)
+          shadowColor: 'rgba(239,85,32,1)',
           shadowOffset: { width: 0, height: 8 },
           shadowOpacity: 0.40,
           shadowRadius: 24,
+          // Android: subtle lift shadow
           elevation: 6,
         }}
       >
