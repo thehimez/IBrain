@@ -1,4 +1,5 @@
 node_modules/
+*.tsbuildinfo
 bin/
 .DS_Store
 *.log
