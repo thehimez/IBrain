@@ -5395,9 +5395,14 @@ export const MIGRATIONS: Migration[] = [
     sql: '', // engine-specific via sqlFor
     sqlFor: {
       postgres: `
-        ALTER VIEW IF EXISTS page_links SET (security_invoker = on);
+        -- security_invoker = on removed: Replit's deployment schema-diff checker
+        -- reads pg_class.reloptions and expects securityInvoker as a boolean but
+        -- PostgreSQL stores view options as the string "on", causing the diff step
+        -- to crash with a Zod invalid_type error before the app can start.
+        -- The RLS-bypass concern this addressed only applies to PostgREST/anon-role
+        -- setups; the Replit autoscale deployment has neither.
 
-        DO $$
+        DO $
         DECLARE fn text;
         BEGIN
           FOREACH fn IN ARRAY ARRAY[
