@@ -15,20 +15,12 @@ import EmptyState from '../../components/common/EmptyState';
 import ErrorView from '../../components/common/ErrorView';
 import { SUPPORTED_MIME_TYPES } from '../../constants/api';
 import { generateId } from '../../utils/format';
-<<<<<<< HEAD
 import type { XandaCrossFile, FileUploadEntry } from '../../types';
-=======
-import type { GBrainFile, FileUploadEntry } from '../../types';
->>>>>>> origin/main
 
 export default function DocumentsScreen() {
   const { files, isLoading, error, refetch } = useDocuments();
   const { queue, isUploading, addToQueue, removeFromQueue, clearQueue, uploadAll } = useUpload();
-<<<<<<< HEAD
   const [previewFile, setPreviewFile] = useState<XandaCrossFile | null>(null);
-=======
-  const [previewFile, setPreviewFile] = useState<GBrainFile | null>(null);
->>>>>>> origin/main
   const [showUpload, setShowUpload] = useState(false);
 
   const pickDocument = async () => {

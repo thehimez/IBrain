@@ -19,11 +19,7 @@ const SUGGESTIONS = [
 ];
 
 export default function ChatScreen() {
-<<<<<<< HEAD
   const { user, logout } = useAuth();
-=======
-  const { user } = useAuth();
->>>>>>> origin/main
   const {
     conversations, currentConversation, currentId, isSending,
     createConversation, deleteConversation, selectConversation, sendMessage,
@@ -66,11 +62,7 @@ export default function ChatScreen() {
               style={{ fontSize: 14, fontWeight: '600', color: Colors.text.primary }}
               numberOfLines={1}
             >
-<<<<<<< HEAD
               {currentConversation?.title ?? 'XandaCross'}
-=======
-              {currentConversation?.title ?? 'GBrain'}
->>>>>>> origin/main
             </Text>
             <Text style={{ fontSize: 10, color: Colors.text.muted }}>
               {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
@@ -79,7 +71,6 @@ export default function ChatScreen() {
           <Text style={{ color: Colors.text.muted, fontSize: 12 }}>▾</Text>
         </TouchableOpacity>
 
-<<<<<<< HEAD
         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10, gap: 8 }}>
           <TouchableOpacity
             onPress={() => logout()}
@@ -113,24 +104,6 @@ export default function ChatScreen() {
             <Text style={{ color: Colors.accent.light, fontSize: 18 }}>+</Text>
           </TouchableOpacity>
         </View>
-=======
-        <TouchableOpacity
-          onPress={createConversation}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            backgroundColor: Colors.accent.bg,
-            borderWidth: 1,
-            borderColor: Colors.accent.border,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginLeft: 10,
-          }}
-        >
-          <Text style={{ color: Colors.accent.light, fontSize: 18 }}>+</Text>
-        </TouchableOpacity>
->>>>>>> origin/main
       </View>
 
       {/* Messages */}

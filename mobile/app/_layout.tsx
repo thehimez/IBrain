@@ -91,10 +91,7 @@ export default function RootLayout() {
         >
           <StatusBar style="light" />
           <Stack screenOptions={{ headerShown: false }}>
-<<<<<<< HEAD
             <Stack.Screen name="auth" />
-=======
->>>>>>> origin/main
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="(tabs)" />
           </Stack>

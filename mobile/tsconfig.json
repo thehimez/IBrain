@@ -1,11 +1,8 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-<<<<<<< HEAD
     "module": "ESNext",
     "moduleResolution": "bundler",
-=======
->>>>>>> origin/main
     "strict": true,
     "paths": {
       "@/*": [

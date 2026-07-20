@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 // XandaCross API base URL.
 // The web frontend (port 5000) proxies /api/* to the XandaCross API (port 3001),
-=======
-// GBrain API base URL.
-// The web frontend (port 5000) proxies /api/* to the GBrain API (port 3001),
->>>>>>> origin/main
 // so pointing the mobile app at the main dev domain works for all API routes.
 //
 // Override with EXPO_PUBLIC_API_URL env var for custom deployments.

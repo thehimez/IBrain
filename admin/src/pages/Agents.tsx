@@ -396,21 +396,13 @@ function AgentDrawer({ agent, onClose, onRevoked }: { agent: Agent; onClose: () 
   const configSnippets: Record<string, string> = {
     'claude-code': isOAuth
       ? [
-<<<<<<< HEAD
         `The user wants to connect XandaCross MCP to your context. Here's how.`,
-=======
-        `The user wants to connect GBrain MCP to your context. Here's how.`,
->>>>>>> origin/main
         ``,
         `# Step 1 — read the client secret from the operator without putting it in shell history.`,
         `# read -s suppresses the echo; export keeps it scoped to this shell session.`,
         `read -rs -p "Client Secret: " GBRAIN_CS && echo`,
         ``,
-<<<<<<< HEAD
         `# Step 2 — mint a token and register XandaCross in one go.`,
-=======
-        `# Step 2 — mint a token and register GBrain in one go.`,
->>>>>>> origin/main
         `claude mcp add --transport http gbrain ${serverUrl}/mcp \\`,
         `  --header "Authorization: Bearer $(curl -s -X POST ${serverUrl}/token \\`,
         `    -d 'grant_type=client_credentials' \\`,
@@ -439,15 +431,9 @@ function AgentDrawer({ agent, onClose, onRevoked }: { agent: Agent; onClose: () 
         `# Then run: history -d $((HISTCMD-1))   # zsh: print -s -- '' && fc -p`,
       ].join('\n')
       : [
-<<<<<<< HEAD
         `The user wants to connect XandaCross MCP to your context. Here's how.`,
         ``,
         `Run this command in terminal to register XandaCross:`,
-=======
-        `The user wants to connect GBrain MCP to your context. Here's how.`,
-        ``,
-        `Run this command in terminal to register GBrain:`,
->>>>>>> origin/main
         ``,
         `claude mcp add --transport http gbrain ${serverUrl}/mcp \\`,
         `  --header "Authorization: Bearer PASTE_YOUR_API_KEY_HERE"`,
@@ -457,11 +443,7 @@ function AgentDrawer({ agent, onClose, onRevoked }: { agent: Agent; onClose: () 
       ].join('\n'),
 
     'chatgpt': [
-<<<<<<< HEAD
       `The user wants to connect XandaCross MCP to ChatGPT.`,
-=======
-      `The user wants to connect GBrain MCP to ChatGPT.`,
->>>>>>> origin/main
       ``,
       `1. Open ChatGPT > Settings > Tools & Integrations > Add MCP Server`,
       `2. Enter this URL — ChatGPT will auto-discover the OAuth configuration:`,
@@ -476,11 +458,7 @@ function AgentDrawer({ agent, onClose, onRevoked }: { agent: Agent; onClose: () 
     ].join('\n'),
 
     'claude-cowork': [
-<<<<<<< HEAD
       `The user wants to connect XandaCross MCP to Claude.ai.`,
-=======
-      `The user wants to connect GBrain MCP to Claude.ai.`,
->>>>>>> origin/main
       ``,
       `1. Open claude.ai > Settings > Connected Apps > Add MCP Server`,
       `2. Server URL: ${serverUrl}/mcp`,
@@ -495,11 +473,7 @@ function AgentDrawer({ agent, onClose, onRevoked }: { agent: Agent; onClose: () 
 
     cursor: isOAuth
       ? [
-<<<<<<< HEAD
         `The user wants to connect XandaCross MCP to Cursor.`,
-=======
-        `The user wants to connect GBrain MCP to Cursor.`,
->>>>>>> origin/main
         ``,
         `Cursor supports OAuth for remote MCP. Add to .cursor/mcp.json:`,
         ``,
@@ -518,11 +492,7 @@ function AgentDrawer({ agent, onClose, onRevoked }: { agent: Agent; onClose: () 
         `When prompted: Client ID ${cid}, use the secret from registration.`,
       ].join('\n')
       : [
-<<<<<<< HEAD
         `The user wants to connect XandaCross MCP to Cursor.`,
-=======
-        `The user wants to connect GBrain MCP to Cursor.`,
->>>>>>> origin/main
         ``,
         `Add to .cursor/mcp.json:`,
         ``,
@@ -542,11 +512,7 @@ function AgentDrawer({ agent, onClose, onRevoked }: { agent: Agent; onClose: () 
       ].join('\n'),
 
     perplexity: [
-<<<<<<< HEAD
       `The user wants to connect XandaCross MCP to Perplexity.`,
-=======
-      `The user wants to connect GBrain MCP to Perplexity.`,
->>>>>>> origin/main
       ``,
       `1. Go to Settings > Connectors > Add MCP`,
       `2. Server URL: ${serverUrl}/mcp`,
