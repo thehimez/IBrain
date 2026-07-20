@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "name": "xandacross-frontend",
-=======
-  "name": "gbrain-frontend",
->>>>>>> origin/main
   "private": true,
   "type": "module",
   "scripts": {

@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 import { Plus, BookOpen, Network, LayoutDashboard, Settings, X, ChevronRight, LogOut } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
-=======
-import { Plus, BookOpen, Network, LayoutDashboard, Settings, X, ChevronRight } from 'lucide-react';
-import { useApp } from '../context/AppContext';
->>>>>>> origin/main
 import ConversationItem from './ConversationItem';
 
 type Page = 'chat' | 'documents' | 'graph';
@@ -31,10 +26,7 @@ export default function Sidebar({ open, onClose, currentPage, onNavigate }: Prop
     deleteConversation, renameConversation,
     brainStatus,
   } = useApp();
-<<<<<<< HEAD
   const { logout } = useAuth();
-=======
->>>>>>> origin/main
 
   const handleNew = () => {
     createConversation();
@@ -143,18 +135,13 @@ export default function Sidebar({ open, onClose, currentPage, onNavigate }: Prop
 
         {/* Brain info footer */}
         <div className="border-t border-navy-600 p-3 flex-shrink-0">
-<<<<<<< HEAD
           <div className="flex items-center gap-2 px-2 mb-3">
-=======
-          <div className="flex items-center gap-2 px-2">
->>>>>>> origin/main
             <div className={`w-2 h-2 rounded-full flex-shrink-0 ${brainStatus?.connected ? 'bg-success animate-pulse-slow' : 'bg-slate-600'}`} />
             <div className="min-w-0">
               <p className="text-xs text-slate-400 truncate">{brainStatus?.pageCount ?? 0} pages indexed</p>
               <p className="text-xs text-slate-600 truncate">v{brainStatus?.version ?? '—'}</p>
             </div>
           </div>
-<<<<<<< HEAD
           <button
             type="button"
             onClick={logout}
@@ -163,8 +150,6 @@ export default function Sidebar({ open, onClose, currentPage, onNavigate }: Prop
             <LogOut size={14} />
             Logout
           </button>
-=======
->>>>>>> origin/main
         </div>
       </aside>
     </>

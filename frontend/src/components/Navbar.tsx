@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { Menu, Wifi, WifiOff, LogOut } from 'lucide-react';
-=======
-import { Brain, Menu, Wifi, WifiOff } from 'lucide-react';
->>>>>>> origin/main
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -12,11 +8,7 @@ interface Props {
 
 export default function Navbar({ onToggleSidebar }: Props) {
   const { getCurrentBrain, brainStatus } = useApp();
-<<<<<<< HEAD
   const { user, logout } = useAuth();
-=======
-  const { user } = useAuth();
->>>>>>> origin/main
   const connected = brainStatus?.connected ?? false;
   const initials = user?.name ? user.name.slice(0, 1).toUpperCase() : 'U';
 
@@ -33,17 +25,11 @@ export default function Navbar({ onToggleSidebar }: Props) {
 
         {/* Logo */}
         <div className="flex items-center gap-2">
-<<<<<<< HEAD
           <img
             src="/assets/xandacross-logo.png"
             alt="XandaCross logo"
             className="w-8 h-8 rounded-lg object-cover glow-blue-sm"
           />
-=======
-          <div className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/30 flex items-center justify-center glow-blue-sm">
-            <Brain size={16} className="text-accent-light" />
-          </div>
->>>>>>> origin/main
           <span className="font-bold text-white tracking-tight text-lg">XandaCross</span>
         </div>
       </div>
@@ -84,7 +70,6 @@ export default function Navbar({ onToggleSidebar }: Props) {
             {user.name}
           </span>
         )}
-<<<<<<< HEAD
         <button
           type="button"
           onClick={logout}
@@ -93,8 +78,6 @@ export default function Navbar({ onToggleSidebar }: Props) {
           <LogOut size={14} />
           <span>Logout</span>
         </button>
-=======
->>>>>>> origin/main
       </div>
     </header>
   );
