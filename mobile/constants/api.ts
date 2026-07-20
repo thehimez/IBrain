@@ -5,7 +5,7 @@
 // Override with EXPO_PUBLIC_API_URL env var for custom deployments.
 export const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ||
-  'https://5ef68902-5a2c-4143-a8ff-d604b2c82451-00-28l4sy50bthr6.sisko.replit.dev';
+  'https://5c4c8529-498e-4fca-a15c-582b9dd75a87-00-11o34mhlk557i.pike.replit.dev';
 
 export const API_ENDPOINTS = {
   me: '/api/auth/me',
