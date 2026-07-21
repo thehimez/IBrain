@@ -13,7 +13,6 @@ interface AuthContextValue {
   user: AuthUser | null;
   isLoading: boolean;
   loginWithGoogle: () => void;
-  loginWithReplit: () => void;
   logout: () => Promise<void>;
 }
 
@@ -48,25 +47,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.href = '/api/auth/google';
   }, []);
 
-  /** Legacy Replit login (popup, kept for backward compat during Phase 1). */
-  const loginWithReplit = useCallback(() => {
-    const domain = window.location.host;
-    const popup = window.open(
-      `https://replit.com/auth_with_repl_site?domain=${domain}`,
-      '_blank',
-      'width=400,height=600,menubar=no,toolbar=no,location=no',
-    );
-    const handler = async (e: MessageEvent) => {
-      if (e.data === 'authed') {
-        window.removeEventListener('message', handler);
-        popup?.close();
-        setIsLoading(true);
-        await fetchMe();
-      }
-    };
-    window.addEventListener('message', handler);
-  }, [fetchMe]);
-
   const logout = useCallback(async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
@@ -75,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, loginWithGoogle, loginWithReplit, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, loginWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   );
