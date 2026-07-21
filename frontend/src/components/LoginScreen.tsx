@@ -1,8 +1,8 @@
 import { Search, Sparkles, Shield } from 'lucide-react';
+import AndroidDownloadLink from './AndroidDownloadLink';
 
 interface Props {
   onLogin: () => void;
-  onLoginReplit?: () => void;
 }
 
 const features = [
@@ -41,7 +41,7 @@ function Orb() {
   );
 }
 
-export default function LoginScreen({ onLogin, onLoginReplit }: Props) {
+export default function LoginScreen({ onLogin }: Props) {
   return (
     <div className="min-h-screen bg-navy-950 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
@@ -94,6 +94,10 @@ export default function LoginScreen({ onLogin, onLoginReplit }: Props) {
         <p className="text-center text-xs text-slate-400 mt-4">
           Your knowledge is private and only visible to you.
         </p>
+
+        <div className="flex justify-center">
+          <AndroidDownloadLink />
+        </div>
       </div>
     </div>
   );
