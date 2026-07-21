@@ -1,4 +1,9 @@
 node_modules/
+frontend/dist/
+frontend/.vercel/
+mobile/.expo/
+attached_assets/
+cookies.txt
 *.tsbuildinfo
 bin/
 .DS_Store
