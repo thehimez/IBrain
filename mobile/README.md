@@ -19,7 +19,7 @@ React Native + Expo app for XandaCross — feature-equivalent to the web fronten
 
 1. **Set the API URL** — edit `constants/api.ts` or create `.env`:
    ```
-   EXPO_PUBLIC_API_URL=https://YOUR_REPLIT_DEV_DOMAIN
+   EXPO_PUBLIC_API_URL=https://api.your-domain.com
    ```
    The mobile app points at the Vite dev server (port 5000) which proxies `/api/*`
    to the XandaCross API on port 3001.
@@ -59,7 +59,7 @@ mobile/
 ├── app/
 │   ├── _layout.tsx          Root layout (AuthProvider + QueryClient)
 │   ├── index.tsx            Auth redirect guard
-│   ├── (auth)/index.tsx     Login screen (Google + Replit)
+│   ├── (auth)/index.tsx     Google OAuth login screen
 │   └── (tabs)/
 │       ├── _layout.tsx      Bottom tab navigator
 │       ├── index.tsx        Chat screen
