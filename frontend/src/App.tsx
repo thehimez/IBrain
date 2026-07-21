@@ -42,7 +42,7 @@ function Layout() {
 }
 
 function AuthGate() {
-  const { user, isLoading, loginWithGoogle, loginWithReplit } = useAuth();
+  const { user, isLoading, loginWithGoogle } = useAuth();
 
   if (isLoading) {
     return (
@@ -56,7 +56,7 @@ function AuthGate() {
   }
 
   if (!user) {
-    return <LoginScreen onLogin={loginWithGoogle} onLoginReplit={loginWithReplit} />;
+    return <LoginScreen onLogin={loginWithGoogle} />;
   }
 
   return (
